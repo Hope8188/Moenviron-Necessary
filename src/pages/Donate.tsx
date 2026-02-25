@@ -9,8 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
-import { supabaseFunctionAuthHeaders } from "@/integrations/supabase/functionHeaders";
+import { invokeEdgeFunction } from "@/integrations/supabase/edgeFunctions";
 import { toast } from "sonner";
 import { Heart, Leaf, Users, Globe, Loader2, CreditCard, Shirt, Package, MapPin, CheckCircle2, ArrowRight } from "lucide-react";
 import { SEO } from "@/components/SEO";
@@ -106,22 +105,19 @@ const Donate = () => {
 
     try {
       // Create checkout session via edge function
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        headers: supabaseFunctionAuthHeaders,
-        body: {
-          items: [{
-            id: "donation",
-            name: `Donation to Moenviron (${currencyConfig.code})`,
-            price: selectedAmount,
-            quantity: 1,
-          }],
-          customerEmail: email,
-          customerName: name || undefined,
-          customerLocation: `${city ? city + ", " : ""}${country}`,
-          currency: currencyKey,
-          mode: "checkout_session",
-          isDonation: true,
-        },
+      const { data, error } = await invokeEdgeFunction<{ url?: string; fallback_required?: boolean }>("create-checkout", {
+        items: [{
+          id: "donation",
+          name: `Donation to Moenviron (${currencyConfig.code})`,
+          price: selectedAmount,
+          quantity: 1,
+        }],
+        customerEmail: email,
+        customerName: name || undefined,
+        customerLocation: `${city ? city + ", " : ""}${country}`,
+        currency: currencyKey,
+        mode: "checkout_session",
+        isDonation: true,
       });
 
       if (error || data?.fallback_required) {

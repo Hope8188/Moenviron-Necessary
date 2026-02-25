@@ -6,8 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
-import { supabaseFunctionAuthHeaders } from "@/integrations/supabase/functionHeaders";
+import { invokeEdgeFunction } from "@/integrations/supabase/edgeFunctions";
 import { toast } from "sonner";
 import { Trash2, Plus, Minus, ShoppingBag, Leaf, ArrowRight, Loader2 } from "lucide-react";
 import stripeLogo from "@/assets/stripe-logo.webp";
@@ -87,26 +86,20 @@ const Cart = () => {
     try {
       const currency = cartItems[0]?.currency || "GBP";
 
-      const { data, error } = await supabase.functions.invoke(
-        "create-checkout",
-        {
-          headers: supabaseFunctionAuthHeaders,
-          body: {
-            items: [
-              {
-                id: "cart_order",
-                name: "Moenviron Order",
-                price: total, // 🚨 MAJOR UNITS — SAME AS DONATE
-                quantity: 1,
-              },
-            ],
-            customerEmail: customerEmail,
-            currency,
-            mode: "checkout_session",
-            isDonation: false,
+      const { data, error } = await invokeEdgeFunction<{ url?: string; fallback_required?: boolean }>("create-checkout", {
+        items: [
+          {
+            id: "cart_order",
+            name: "Moenviron Order",
+            price: total, // 🚨 MAJOR UNITS — SAME AS DONATE
+            quantity: 1,
           },
-        }
-      );
+        ],
+        customerEmail: customerEmail,
+        currency,
+        mode: "checkout_session",
+        isDonation: false,
+      });
 
       if (error || data?.fallback_required) {
         console.error("Checkout failed:", error || data);

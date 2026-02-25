@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
-import { supabaseFunctionAuthHeaders } from "@/integrations/supabase/functionHeaders";
+import { invokeEdgeFunction } from "@/integrations/supabase/edgeFunctions";
 import { toast } from "sonner";
 import { safeToastError } from "@/lib/error-handler";
 import { Leaf, Loader2, ArrowLeft, ShoppingBag, Lock, CheckCircle2, MapPin, CreditCard } from "lucide-react";
@@ -351,19 +351,16 @@ export function Checkout() {
 
     try {
       // All payments go through Stripe
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        headers: supabaseFunctionAuthHeaders,
-        body: {
-          items: cartItems.map((item) => ({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-          })),
-          customerEmail,
-          customerName,
-          mode: "payment_intent",
-        },
+      const { data, error } = await invokeEdgeFunction<{ clientSecret?: string; paymentIntentId?: string }>("create-checkout", {
+        items: cartItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        customerEmail,
+        customerName,
+        mode: "payment_intent",
       });
 
       if (error) throw error;

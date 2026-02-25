@@ -1,6 +1,5 @@
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { supabaseFunctionAuthHeaders } from "@/integrations/supabase/functionHeaders";
+import { invokeEdgeFunction } from "@/integrations/supabase/edgeFunctions";
 
 /**
  * Dynamically creates a Stripe Checkout session through Supabase and redirects.
@@ -23,22 +22,19 @@ export const redirectToStripeFallback = async (
       return;
     }
 
-    const { data, error } = await supabase.functions.invoke("create-checkout", {
-      headers: supabaseFunctionAuthHeaders,
-      body: {
-        items: [
-          {
-            id: "fallback_donation",
-            name: "Donation to Moenviron",
-            price: amount,
-            quantity: 1,
-          },
-        ],
-        customerEmail: email,
-        currency,
-        mode: "checkout_session",
-        isDonation: true,
-      },
+    const { data, error } = await invokeEdgeFunction<{ url?: string }>("create-checkout", {
+      items: [
+        {
+          id: "fallback_donation",
+          name: "Donation to Moenviron",
+          price: amount,
+          quantity: 1,
+        },
+      ],
+      customerEmail: email,
+      currency,
+      mode: "checkout_session",
+      isDonation: true,
     });
 
     if (!error && data?.url) {
