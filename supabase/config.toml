@@ -1,1 +1,40 @@
 project_id = "fnlyuabpiqwqaohztdbn"
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.create-payment-intent]
+verify_jwt = false
+
+[functions.confirm-payment]
+verify_jwt = false
+
+[functions.send-order-confirmation]
+verify_jwt = false
+
+[functions.send-order-status-update]
+verify_jwt = false
+
+[functions.send-admin-invitation]
+verify_jwt = false
+
+[functions.manage-admins]
+verify_jwt = false
+
+[functions.sync-to-resend]
+verify_jwt = false
+
+[functions.sync-to-mailerlite]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.paystack-payment]
+verify_jwt = false
+
+[functions.paystack-webhook]
+verify_jwt = false
+
+[functions.test-resend]
+verify_jwt = false

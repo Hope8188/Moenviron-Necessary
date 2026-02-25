@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseFunctionAuthHeaders } from "@/integrations/supabase/functionHeaders";
 import { toast } from "sonner";
 import { safeToastError } from "@/lib/error-handler";
 import { Leaf, Loader2, ArrowLeft, ShoppingBag, Lock, CheckCircle2, MapPin, CreditCard } from "lucide-react";
@@ -351,6 +352,7 @@ export function Checkout() {
     try {
       // All payments go through Stripe
       const { data, error } = await supabase.functions.invoke("create-checkout", {
+        headers: supabaseFunctionAuthHeaders,
         body: {
           items: cartItems.map((item) => ({
             id: item.id,
@@ -376,7 +378,7 @@ export function Checkout() {
     } catch (error) {
       console.error("Error creating payment:", error);
       // Automatic fallback redirection - using total (subtotal + shipping)
-      redirectToStripeFallback(customerEmail, subtotal + 5, "gbp");
+      await redirectToStripeFallback(customerEmail, subtotal + 5, "gbp");
     } finally {
       setIsLoading(false);
     }

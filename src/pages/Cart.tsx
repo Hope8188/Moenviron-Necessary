@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseFunctionAuthHeaders } from "@/integrations/supabase/functionHeaders";
 import { toast } from "sonner";
 import { Trash2, Plus, Minus, ShoppingBag, Leaf, ArrowRight, Loader2 } from "lucide-react";
 import stripeLogo from "@/assets/stripe-logo.webp";
@@ -89,6 +90,7 @@ const Cart = () => {
       const { data, error } = await supabase.functions.invoke(
         "create-checkout",
         {
+          headers: supabaseFunctionAuthHeaders,
           body: {
             items: [
               {

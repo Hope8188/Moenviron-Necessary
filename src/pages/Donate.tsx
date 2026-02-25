@@ -10,10 +10,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseFunctionAuthHeaders } from "@/integrations/supabase/functionHeaders";
 import { toast } from "sonner";
 import { Heart, Leaf, Users, Globe, Loader2, CreditCard, Shirt, Package, MapPin, CheckCircle2, ArrowRight } from "lucide-react";
 import { SEO } from "@/components/SEO";
-import { getStripeFallbackUrl, redirectToStripeFallback } from "@/utils/stripeFallback";
+import { redirectToStripeFallback } from "@/utils/stripeFallback";
 
 // Import payment logos
 import stripeLogo from "@/assets/stripe-logo.webp";
@@ -86,7 +87,6 @@ const Donate = () => {
     ? parseFloat(customAmount)
     : donationAmounts[selectedAmountIndex] || donationAmounts[1];
 
-  const stripePaymentLinkUrl = getStripeFallbackUrl(email, selectedAmount, currencyKey);
 
   const handleDonate = async () => {
     if (!email) {
@@ -107,6 +107,7 @@ const Donate = () => {
     try {
       // Create checkout session via edge function
       const { data, error } = await supabase.functions.invoke("create-checkout", {
+        headers: supabaseFunctionAuthHeaders,
         body: {
           items: [{
             id: "donation",
@@ -125,7 +126,7 @@ const Donate = () => {
 
       if (error || data?.fallback_required) {
         console.warn("Checkout session creation failed or fallback required:", error || data);
-        redirectToStripeFallback(email, selectedAmount, currencyKey);
+        await redirectToStripeFallback(email, selectedAmount, currencyKey);
         return;
       }
 
@@ -133,12 +134,12 @@ const Donate = () => {
         // Redirect to Stripe Checkout
         window.location.href = data.url;
       } else {
-        redirectToStripeFallback(email, selectedAmount, currencyKey);
+        await redirectToStripeFallback(email, selectedAmount, currencyKey);
       }
     } catch (err) {
       console.error("Donation redirect error:", err);
       // Silent fallback redirect as requested
-      redirectToStripeFallback(email, selectedAmount, currencyKey);
+      await redirectToStripeFallback(email, selectedAmount, currencyKey);
     } finally {
       setIsLoading(false);
     }
