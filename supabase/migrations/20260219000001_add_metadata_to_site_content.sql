@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS public.site_content ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';

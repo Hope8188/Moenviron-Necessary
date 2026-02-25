@@ -1,0 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables - NEVER commit these
+.env
+.env.*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Sensitive scripts (contain or used to contain secrets)
+set-stripe-secret.ps1
+inject-supabase-secret.mjs
+fix-payment-config.mjs
+test-stripe-live.mjs
+test-currency-live.mjs
+verify-migration.mjs
