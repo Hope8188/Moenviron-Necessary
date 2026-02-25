@@ -1,17 +1,2 @@
-# ============================================================
-# FRONTEND ENV VARS (available in browser via Vite)
-# ============================================================
 
-# Stripe Publishable Key (LIVE)
-VITE_STRIPE_PUBLISHABLE_KEY="pk_live_51Su7BqALVcqNH7rCissBk419Q2oP0jMp1t9DH6tCdOAggoycji5fL6B3QFUjnykScuomq7rTBkbaW4BZ4UGOJ5On00OHLjjko8"
-
-# Supabase (Project: wmeijbrqjuhvnksiijcz - THE ONE YOU OWN)
-VITE_SUPABASE_URL="https://wmeijbrqjuhvnksiijcz.supabase.co"
-VITE_SUPABASE_PUBLISHABLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtZWlqYnJxanVodm5rc2lpamN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyMzM5ODksImV4cCI6MjA4NDgwOTk4OX0.4PMYHuvJUjd8vQ-P55U1IKyEPYEtBuJFSEp8uD-T078"
-VITE_SUPABASE_PROJECT_ID="wmeijbrqjuhvnksiijcz"
-
-# ============================================================
-# SERVER-SIDE & DEPLOYMENT
-# ============================================================
-RESEND_API_KEY="re_cXcM11AL_H3bYNc6CLfuTebHojs1nHpqs"
 /// <reference types="vite/client" />
