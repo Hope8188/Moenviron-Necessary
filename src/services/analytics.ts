@@ -11,11 +11,11 @@ export interface PageViewData {
   region: string;
   latitude: number;
   longitude: number;
+  device_type: string;
 }
 
 export async function getGeoData() {
   try {
-    // get.geojs.io is free and has no CORS limitations
     const response = await fetch("https://get.geojs.io/v1/ip/geo.json");
     if (!response.ok) throw new Error("Failed to fetch geo data");
     const data = await response.json();
@@ -48,6 +48,9 @@ export async function trackPageView(pagePath: string) {
     sessionStorage.setItem("session_id", sessionId);
     localStorage.setItem("visitor_id", visitorId);
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const deviceType = isMobile ? 'mobile' : 'desktop';
+
     const payload = {
       page_path: pagePath,
       referrer: document.referrer || "direct",
@@ -59,6 +62,7 @@ export async function trackPageView(pagePath: string) {
       region: geoData.region,
       latitude: geoData.latitude,
       longitude: geoData.longitude,
+      device_type: deviceType,
     };
 
     const { error } = await supabase.from("page_views").insert(payload);
