@@ -45,8 +45,12 @@ exports.handler = async (event) => {
           quantity: 1,
         }],
         mode: 'payment',
-        success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/cart`,
+        success_url: isDonation
+          ? `${baseUrl}/donation-success?session_id={CHECKOUT_SESSION_ID}&amount=${amount}`
+          : `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: isDonation
+          ? `${baseUrl}/donate?status=cancelled`
+          : `${baseUrl}/cart`,
         customer_email: email || undefined,
         submit_type: isDonation ? 'donate' : 'pay'
       };
@@ -123,8 +127,10 @@ exports.handler = async (event) => {
       mode: 'payment',
       customer_email: customerEmail,
       submit_type: isDonation ? 'donate' : 'pay',
-      success_url: `${baseUrl}/order-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/cart`,
+      success_url: isDonation
+        ? `${baseUrl}/donation-success?session_id={CHECKOUT_SESSION_ID}&amount=${total}`
+        : `${baseUrl}/order-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: isDonation ? `${baseUrl}/donate?status=cancelled` : `${baseUrl}/cart`,
       metadata: {
         customer_name: customerName || '',
         customer_location: customerLocation || '',
