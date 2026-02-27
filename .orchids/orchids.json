@@ -1,0 +1,8 @@
+{
+  "projectId": "db9a215c-8831-47b8-b268-54b5d0459353",
+  "createdAt": 1772012526008,
+  "startupCommands": [
+    "bun install; bun run dev -- --host 0.0.0.0 --port 8080"
+  ],
+  "templateId": "any"
+}

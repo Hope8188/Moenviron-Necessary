@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kenya flag">
+  <!-- Stripes: Black / White / Red / White / Green -->
+  <rect width="64" height="64" fill="#006600"/>
+  <rect width="64" height="40" y="0" fill="#000000"/>
+  <rect width="64" height="6" y="18" fill="#FFFFFF"/>
+  <rect width="64" height="16" y="24" fill="#BB0000"/>
+  <rect width="64" height="6" y="40" fill="#FFFFFF"/>
+
+  <!-- Crossed spears (simplified) -->
+  <path d="M16 52 L48 12" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M48 52 L16 12" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Maasai shield (simplified) -->
+  <ellipse cx="32" cy="32" rx="10" ry="16" fill="#FFFFFF"/>
+  <ellipse cx="32" cy="32" rx="8" ry="14" fill="#BB0000"/>
+  <ellipse cx="32" cy="32" rx="3.5" ry="14" fill="#000000"/>
+  <circle cx="32" cy="22" r="2" fill="#FFFFFF"/>
+  <circle cx="32" cy="42" r="2" fill="#FFFFFF"/>
+</svg>

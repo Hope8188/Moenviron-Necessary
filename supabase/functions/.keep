@@ -1,0 +1,3 @@
+// Edge functions directory - functions are deployed via Lovable Cloud
+// This file serves as a placeholder to indicate edge functions should be set up
+export {};

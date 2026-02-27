@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Moenviron Design System - Earth tones for circular fashion */
+
+@layer base {
+  :root {
+    /* Earth-tone palette */
+    --background: 40 20% 98%;
+    --foreground: 25 30% 12%;
+
+    --card: 40 25% 97%;
+    --card-foreground: 25 30% 12%;
+
+    --popover: 40 25% 97%;
+    --popover-foreground: 25 30% 12%;
+
+    /* Forest green primary */
+    --primary: 150 40% 25%;
+    --primary-foreground: 40 20% 98%;
+
+    /* Warm cream secondary */
+    --secondary: 35 30% 92%;
+    --secondary-foreground: 25 30% 15%;
+
+    /* Earthy muted tones */
+    --muted: 35 20% 90%;
+    --muted-foreground: 25 15% 35%;
+
+    /* Warm brown accent */
+    --accent: 25 45% 35%;
+    --accent-foreground: 40 20% 98%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 40 20% 98%;
+
+    --border: 35 25% 85%;
+    --input: 35 25% 85%;
+    --ring: 150 40% 25%;
+
+    --radius: 0.75rem;
+
+    /* Custom brand colors */
+    --forest: 150 40% 25%;
+    --forest-light: 150 35% 40%;
+    --earth: 25 45% 35%;
+    --earth-light: 25 35% 50%;
+    --sand: 40 30% 85%;
+    --cream: 40 25% 95%;
+    --charcoal: 25 20% 18%;
+
+    /* Gradients */
+    --gradient-forest: linear-gradient(135deg, hsl(150 40% 25%), hsl(150 35% 35%));
+    --gradient-earth: linear-gradient(135deg, hsl(25 45% 35%), hsl(25 35% 45%));
+    --gradient-hero: linear-gradient(180deg, hsl(40 20% 98%) 0%, hsl(35 30% 92%) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(25 30% 12% / 0.08);
+    --shadow-medium: 0 8px 30px -8px hsl(25 30% 12% / 0.12);
+    --shadow-strong: 0 16px 50px -12px hsl(25 30% 12% / 0.18);
+
+    --sidebar-background: 40 20% 97%;
+    --sidebar-foreground: 25 30% 12%;
+    --sidebar-primary: 150 40% 25%;
+    --sidebar-primary-foreground: 40 20% 98%;
+    --sidebar-accent: 35 30% 92%;
+    --sidebar-accent-foreground: 25 30% 15%;
+    --sidebar-border: 35 25% 85%;
+    --sidebar-ring: 150 40% 25%;
+  }
+
+  .dark {
+    --background: 25 20% 8%;
+    --foreground: 40 20% 95%;
+
+    --card: 25 18% 12%;
+    --card-foreground: 40 20% 95%;
+
+    --popover: 25 18% 12%;
+    --popover-foreground: 40 20% 95%;
+
+    --primary: 150 35% 45%;
+    --primary-foreground: 25 20% 8%;
+
+    --secondary: 25 15% 18%;
+    --secondary-foreground: 40 20% 95%;
+
+    --muted: 25 15% 18%;
+    --muted-foreground: 35 15% 75%;
+
+    --accent: 25 35% 45%;
+    --accent-foreground: 40 20% 95%;
+
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 40 20% 95%;
+
+    --border: 25 15% 22%;
+    --input: 25 15% 22%;
+    --ring: 150 35% 45%;
+
+    --sidebar-background: 25 18% 10%;
+    --sidebar-foreground: 40 20% 95%;
+    --sidebar-primary: 150 35% 45%;
+    --sidebar-primary-foreground: 25 20% 8%;
+    --sidebar-accent: 25 15% 18%;
+    --sidebar-accent-foreground: 40 20% 95%;
+    --sidebar-border: 25 15% 22%;
+    --sidebar-ring: 150 35% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gradient-forest {
+    background: var(--gradient-forest);
+  }
+
+  .gradient-earth {
+    background: var(--gradient-earth);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+
+  .shadow-strong {
+    box-shadow: var(--shadow-strong);
+  }
+
+  /* Thin scrollbar for admin toolbar and similar overflow containers */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted));
+    border-radius: 9999px;
+  }
+
+  .scrollbar-thumb-muted::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+  }
+
+  /* Aurora Animations */
+  @keyframes aurora-border {
+    0% { border-color: hsl(var(--primary) / 0.2); }
+    50% { border-color: hsl(var(--accent) / 0.4); }
+    100% { border-color: hsl(var(--primary) / 0.2); }
+  }
+
+  @keyframes aurora-glow {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+  }
+
+  .animate-aurora-border {
+    animation: aurora-border 5s ease-in-out infinite;
+  }
+
+  .animate-aurora-glow {
+    animation: aurora-glow 8s ease-in-out infinite;
+  }
+
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl;
+  }
+
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Admin tabs: prevent shrinking so they stay on one line */
+[role="tablist"].flex-nowrap [role="tab"] {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@keyframes animate-aurora {
+  from { background-position: 50% 50%, 50% 50%; }
+  to { background-position: 350% 50%, 350% 50%; }
+}
+
+.aurora-bg {
+  --aurora: repeating-linear-gradient(100deg, #3b82f6 0%, #3b82f6 7%, #93c5fd 10%, #60a5fa 12%, #60a5fa 16%);
+  background-image: var(--aurora), var(--aurora);
+  background-size: 300%, 200%;
+  background-position: 50% 50%, 50% 50%;
+  filter: blur(10px) invert(0);
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+}
+
+.dark .aurora-bg {
+  filter: blur(10px) invert(1);
+}
+
+.aurora-animate {
+  animation: animate-aurora 60s linear infinite;
+}

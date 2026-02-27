@@ -1,0 +1,20 @@
+0f13c1e style: final purge of legacy payment UI elements
+e260059 fix: restore single Stripe payment option and prune non-live methods
+20faa12 fix: restore mailerlite connection logic and optimize seo to 90+
+9ad3180 chore: remove diagnostic scripts
+a07bd26 fix: resolve mailerlite connection visibility and shop content issues
+06493c2 feat: implement advanced analytics dashboard and premium UI enhancements
+f10bffb Final cleanup: Remove unused payment assets and improve cart checkout flow
+c163e87 Refine cart/checkout, remove non-Stripe payments, cleanup duplicate products, and reorder admin tabs
+2d44e86 fix: restore admin access for jackblessed191@gmail.com and simplify payment UI
+0dd48e8 chore: migrate production Supabase project to wmeijbr (user owned)
+75ae676 fix: use live Stripe key with hardcoded fallback + add Supabase deploy workflow
+3719656 feat: Implement Content-Security-Policy and reformat font preload links.
+26aca3a fix: add vercel routing and security headers
+729ba23 feat: Implement admin user management page for assigning and removing user roles.
+a0cad6e Feat: Optimize performance, accessibility, and security headers. Fix: Stripe live mode and invitation email logic.
+e28a0c8 fix: robust stripe key selection and invitation links
+5d8ed1b fix: remaining Moenviron branding
+70b65d7 feat: enhance SEO, accessibility, and performance; fix branding consistency
+a00b895 Fix broken footer image and add product image error handling with tote bag fallback
+fa36f99 Performance, SEO and Admin improvements: Optimized images, enhanced CMS, and updated sitemap/robots.txt
