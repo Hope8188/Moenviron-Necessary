@@ -22,7 +22,32 @@ serve(async (req) => {
             httpClient: Stripe.createFetchHttpClient(),
         });
 
-        const body = await req.json();
+        let body: any;
+        if (req.method === "GET") {
+            const url = new URL(req.url);
+            const amount = parseFloat(url.searchParams.get("amount") || "0");
+            const email = url.searchParams.get("email") || "";
+            const currency = url.searchParams.get("currency") || "gbp";
+            const isDonation = url.searchParams.get("isDonation") === "true";
+
+            if (!amount || amount <= 0) {
+                throw new Error("Invalid donation amount provided via URL.");
+            }
+
+            body = {
+                items: [{
+                    id: "donation_link",
+                    name: isDonation ? "Donation to Moenviron" : "Checkout",
+                    price: amount,
+                    quantity: 1,
+                }],
+                customerEmail: email,
+                currency,
+                isDonation,
+            };
+        } else {
+            body = await req.json();
+        }
         const { items, customerEmail, customerName, customerLocation, locationMetadata, currency: requestedCurrency, isDonation } = body;
 
         const baseUrl = Deno.env.get("PUBLIC_SITE_URL") || "https://moenviron.com";
