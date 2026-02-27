@@ -56,17 +56,17 @@ exports.handler = async (event) => {
       return { statusCode: 200, headers, body: JSON.stringify({ received: true }) };
     }
 
-    if (stripeEvent.type === 'payment_intent.succeeded') {
-      const paymentIntent = stripeEvent.data.object;
-      const metadata = paymentIntent.metadata || {};
+    if (stripeEvent.type === 'payment_intent.succeeded' || stripeEvent.type === 'checkout.session.completed') {
+      const sessionOrIntent = stripeEvent.data.object;
+      const metadata = sessionOrIntent.metadata || {};
 
       const orderData = {
-        user_email: metadata.customer_email || paymentIntent.receipt_email,
-        user_name: metadata.customer_name || '',
-        total_amount: paymentIntent.amount / 100,
-        currency: paymentIntent.currency.toUpperCase(),
+        user_email: metadata.customer_email || sessionOrIntent.customer_details?.email || sessionOrIntent.receipt_email,
+        user_name: metadata.customer_name || sessionOrIntent.customer_details?.name || '',
+        total_amount: (sessionOrIntent.amount_total || sessionOrIntent.amount) / 100,
+        currency: (sessionOrIntent.currency || 'gbp').toUpperCase(),
         payment_method: 'stripe',
-        stripe_payment_intent_id: paymentIntent.id,
+        stripe_payment_intent_id: sessionOrIntent.payment_intent || sessionOrIntent.id,
         items: metadata.items ? JSON.parse(metadata.items) : [],
         status: 'confirmed',
       };
