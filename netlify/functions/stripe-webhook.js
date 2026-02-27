@@ -52,6 +52,10 @@ exports.handler = async (event) => {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
+    if (stripeEvent.type === 'v2.core.event_destination.ping') {
+      return { statusCode: 200, headers, body: JSON.stringify({ received: true }) };
+    }
+
     if (stripeEvent.type === 'payment_intent.succeeded') {
       const paymentIntent = stripeEvent.data.object;
       const metadata = paymentIntent.metadata || {};

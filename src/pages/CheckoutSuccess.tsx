@@ -19,30 +19,10 @@ const CheckoutSuccess = () => {
     window.dispatchEvent(new CustomEvent("cart-updated"));
 
     async function processOrder() {
-      if (!orderId) {
-        setIsProcessing(false);
-        setOrderConfirmed(true);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase.functions.invoke("stripe-webhook", {
-          body: sessionId ? { sessionId } : { paymentIntentId },
-        });
-
-        if (error) {
-          console.error("Error processing order:", error);
-        } else if (data?.success) {
-          setOrderConfirmed(true);
-        } else {
-          setOrderConfirmed(true);
-        }
-      } catch (err) {
-        console.error("Failed to process order:", err);
-        setOrderConfirmed(true);
-      } finally {
-        setIsProcessing(false);
-      }
+      // Small delay to allow webhook to fire, though the UI is just for feedback
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsProcessing(false);
+      setOrderConfirmed(true);
     }
 
     processOrder();
