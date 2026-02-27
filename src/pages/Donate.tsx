@@ -84,7 +84,7 @@ const Donate = () => {
   // Calculate selected amount in the target currency
   const selectedAmount = customAmount
     ? parseFloat(customAmount)
-    : donationAmounts[selectedAmountIndex] || donationAmounts[1];
+    : donationAmounts[selectedAmountIndex] || donationAmounts[0];
 
   const stripePaymentLinkUrl = getStripeFallbackUrl(email, selectedAmount, currencyKey);
 
@@ -105,10 +105,8 @@ const Donate = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/.netlify/functions/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const { data, error: invokeError } = await supabase.functions.invoke("create-checkout", {
+        body: {
           items: [{
             id: "donation",
             name: `Donation to Moenviron (${currencyConfig.code})`,
@@ -121,14 +119,11 @@ const Donate = () => {
           currency: currencyKey,
           mode: "checkout_session",
           isDonation: true,
-        })
+        }
       });
 
-      const data = await response.json();
-      const error = !response.ok ? data.error : null;
-
-      if (error || data?.fallback_required) {
-        console.warn("Checkout session creation failed or fallback required:", error || data);
+      if (invokeError) {
+        console.warn("Checkout session creation failed:", invokeError);
         redirectToStripeFallback(email, selectedAmount, currencyKey);
         return;
       }

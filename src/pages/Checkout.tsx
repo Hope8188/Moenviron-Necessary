@@ -348,10 +348,8 @@ export function Checkout() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/.netlify/functions/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const { data, error: invokeError } = await supabase.functions.invoke("create-checkout", {
+        body: {
           items: cartItems.map((item) => ({
             id: item.id,
             name: item.name,
@@ -361,11 +359,10 @@ export function Checkout() {
           customerEmail,
           customerName,
           mode: "payment_intent",
-        })
+        }
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Checkout failed");
+      if (invokeError) throw invokeError;
 
       if (data?.clientSecret) {
         setClientSecret(data.clientSecret);

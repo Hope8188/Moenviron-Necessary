@@ -83,10 +83,8 @@ const Cart = () => {
 
     try {
       const currency = cartItems[0]?.currency || "GBP";
-      const response = await fetch("/.netlify/functions/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const { data, error: invokeError } = await supabase.functions.invoke("create-checkout", {
+        body: {
           items: [{
             id: "cart_order",
             name: "Moenviron Order",
@@ -97,14 +95,11 @@ const Cart = () => {
           currency,
           mode: "checkout_session",
           isDonation: false,
-        })
+        }
       });
 
-      const data = await response.json();
-      const error = !response.ok ? data.error : null;
-
-      if (error || data?.fallback_required) {
-        console.error("Checkout failed:", error || data);
+      if (invokeError) {
+        console.error("Checkout failed:", invokeError);
         toast.error("Unable to start checkout. Please try again.");
         return;
       }

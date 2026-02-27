@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-export const STRIPE_DYNAMIC_CHECKOUT_URL = "/.netlify/functions/create-checkout";
+export const STRIPE_DYNAMIC_CHECKOUT_URL = "https://wmeijbrqjuhvnksiijcz.supabase.co/functions/v1/create-checkout";
 
 // Fallback static URL - the user's preferred donation link
 export const STRIPE_PAYMENT_LINK_STATIC_URL = "https://donate.stripe.com/dRm7sKgzH3qtapRg8wd3i00";
