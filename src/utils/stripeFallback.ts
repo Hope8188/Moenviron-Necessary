@@ -7,37 +7,36 @@ export const STRIPE_PAYMENT_LINK_STATIC_URL = "https://donate.stripe.com/dRm7sKg
 /**
  * Generates a dynamic redirect URL via our create-checkout function.
  * @param email - The customer's email address
- * @param amount - The donation amount
- * @param currency - The currency code (default: gbp)
- * @returns A fully qualified URL to initiate the checkout
+ * @param amount - The amount to charge
+ * @param currency - The currency code (e.g. 'gbp', 'eur')
  */
-export const getStripeRedirectUrl = (
-    email: string,
-    amount: number,
-    currency: string = "gbp",
-    isDonation: boolean = true
-) => {
-    const url = new URL(STRIPE_DYNAMIC_CHECKOUT_URL, window.location.origin);
-    url.searchParams.append("email", email);
-    url.searchParams.append("amount", amount.toString());
-    url.searchParams.append("currency", currency);
-    url.searchParams.append("isDonation", isDonation ? "true" : "false");
-    return url.toString();
+export const getStripeFallbackUrl = (email?: string, amount?: number, currency: string = 'gbp'): string => {
+    if (!amount || amount <= 0) return STRIPE_PAYMENT_LINK_STATIC_URL;
+
+    const params = new URLSearchParams();
+    params.append('amount', amount.toString());
+    params.append('currency', currency.toLowerCase());
+
+    if (email) {
+        params.append('email', email);
+    }
+
+    params.append('isDonation', 'true');
+
+    return `${STRIPE_DYNAMIC_CHECKOUT_URL}?${params.toString()}`;
 };
 
 /**
- * Handles the fallback redirection when the primary checkout method fails.
- * Attempts to use the dynamic redirect function first, then falls back to 
- * the static Stripe payment link.
+ * Handles payment redirection efficiently with user feedback.
  */
-export const redirectToStripeFallback = (email: string, amount: number, currency: string = "gbp") => {
-    try {
-        const dynamicUrl = getStripeRedirectUrl(email, amount, currency);
-        toast.info("Redirecting to secure checkout...");
-        window.location.href = dynamicUrl;
-    } catch (err) {
-        console.error("Fallback redirect failed:", err);
-        toast.info("Reconnecting to payment provider...");
-        window.location.href = STRIPE_PAYMENT_LINK_STATIC_URL;
-    }
+export const redirectToStripeFallback = (email?: string, amount?: number, currency: string = 'gbp') => {
+    toast.info("Redirecting...", {
+        description: "Taking you to secure checkout.",
+        duration: 2000,
+    });
+
+    const url = getStripeFallbackUrl(email, amount, currency);
+
+    // Immediate redirect for smoother experience
+    window.location.href = url;
 };

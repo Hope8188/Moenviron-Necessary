@@ -1,100 +1,104 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { safeToastError } from '@/lib/error-handler';
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Heart,
-  Leaf,
-  ShieldCheck,
-  Globe,
-  ArrowRight,
-  CheckCircle2,
-  Coins,
-  MapPin,
-  Mail,
-  User,
-  Zap,
-  Loader2,
-  ShoppingBag
-} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { redirectToStripeFallback } from "@/utils/stripeFallback";
+import { Heart, Leaf, Users, Globe, Loader2, CreditCard, Shirt, Package, MapPin, CheckCircle2, ArrowRight } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getStripeFallbackUrl, redirectToStripeFallback } from "@/utils/stripeFallback";
 
-interface CurrencyConfig {
-  code: string;
-  symbol: string;
-  minAmount: number;
-}
+// Import payment logos
+import stripeLogo from "@/assets/stripe-logo.webp";
+import { CURRENCY_CONFIG, COUNTRY_CURRENCY, COUNTRIES, getCurrencyForCountry, formatPrice } from "@/lib/currency";
 
-const CURRENCY_CONFIG: Record<string, CurrencyConfig> = {
-  gbp: { code: "GBP", symbol: "£", minAmount: 2 },
-  kes: { code: "KES", symbol: "KSh", minAmount: 100 },
-  usd: { code: "USD", symbol: "$", minAmount: 2 },
-  eur: { code: "EUR", symbol: "€", minAmount: 2 },
-};
+// Base donation amounts in GBP
+const BASE_DONATION_AMOUNTS_GBP = [10, 25, 50, 100];
 
-const CATEGORIES = [
-  { id: 'education', name: 'Education', icon: '🎓' },
-  { id: 'environment', name: 'Environment', icon: '🌱' },
-  { id: 'health', name: 'Health', icon: '🏥' },
-  { id: 'poverty', name: 'Poverty', icon: '🤝' },
+const CLOTHES_CATEGORIES = [
+  {
+    id: "everyday",
+    title: "Everyday Wear",
+    description: "T-shirts, jeans, casual dresses, sweaters, and everyday clothing items",
+    icon: Shirt,
+    examples: ["T-shirts", "Jeans", "Sweaters", "Casual dresses", "Shorts"],
+  },
+  {
+    id: "formal",
+    title: "Formal & Workwear",
+    description: "Suits, blazers, formal dresses, office attire, and professional clothing",
+    icon: Users,
+    examples: ["Suits", "Blazers", "Formal dresses", "Dress shirts", "Skirts"],
+  },
+  {
+    id: "accessories",
+    title: "Accessories & Others",
+    description: "Shoes, bags, scarves, belts, and other textile accessories",
+    icon: Package,
+    examples: ["Shoes", "Bags", "Scarves", "Belts", "Hats"],
+  },
 ];
 
-export function Donate() {
-  const [searchParams] = useSearchParams();
-  const [selectedAmount, setSelectedAmount] = useState<number>(20);
-  const [customAmount, setCustomAmount] = useState<string>("");
-  const [currencyKey, setCurrencyKey] = useState<string>("gbp");
+const Donate = () => {
+  const [donationType, setDonationType] = useState<"money" | "clothes">("money");
+  const [selectedAmountIndex, setSelectedAmountIndex] = useState<number>(1);
+  const [customAmount, setCustomAmount] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
-  const [city, setCity] = useState("");
   const [country, setCountry] = useState("United Kingdom");
+  const [city, setCity] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clothes donation state
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [donorEmail, setDonorEmail] = useState("");
+  const [clothesStep, setClothesStep] = useState(1);
   const [donorName, setDonorName] = useState("");
+  const [donorEmail, setDonorEmail] = useState("");
+  const [donorPhone, setDonorPhone] = useState("");
+  const [donorAddress, setDonorAddress] = useState("");
+  const [clothesNotes, setClothesNotes] = useState("");
+  const [isClothesSubmitting, setIsClothesSubmitting] = useState(false);
 
+  // Get currency based on country
+  const currencyKey = getCurrencyForCountry(country);
   const currencyConfig = CURRENCY_CONFIG[currencyKey];
+  const { symbol: currencySymbol, rate: exchangeRate } = currencyConfig;
 
+  // Reset amount selection when currency changes (prevents stale custom amounts across currencies)
   useEffect(() => {
-    const amount = searchParams.get("amount");
-    if (amount) {
-      const parsed = parseFloat(amount);
-      if (!isNaN(parsed)) {
-        setSelectedAmount(parsed);
-      }
-    }
-    const curr = searchParams.get("currency");
-    if (curr && CURRENCY_CONFIG[curr.toLowerCase()]) {
-      setCurrencyKey(curr.toLowerCase());
-    }
-  }, [searchParams]);
-
-  const handleAmountClick = (amount: number) => {
-    setSelectedAmount(amount);
+    setSelectedAmountIndex(1);
     setCustomAmount("");
-  };
+  }, [currencyKey]);
+  // Convert base GBP amounts to selected currency and guard against Stripe minimums
+  const rawDonationAmounts = BASE_DONATION_AMOUNTS_GBP.map((amt) => Math.round(amt * exchangeRate));
+  const donationAmounts = rawDonationAmounts.map((amt) => Math.max(amt, currencyConfig.minAmount));
 
-  const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomAmount(e.target.value);
-    const parsed = parseFloat(e.target.value);
-    if (!isNaN(parsed)) {
-      setSelectedAmount(parsed);
-    }
-  };
+  // Calculate selected amount in the target currency
+  const selectedAmount = customAmount
+    ? parseFloat(customAmount)
+    : donationAmounts[selectedAmountIndex] || donationAmounts[1];
 
-  const handleDonateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const stripePaymentLinkUrl = getStripeFallbackUrl(email, selectedAmount, currencyKey);
+
+  const handleDonate = async () => {
     if (!email) {
       toast.error("Please enter your email address");
       return;
     }
-
-    if (selectedAmount < currencyConfig.minAmount) {
-      toast.error(`Minimum donation is ${currencyConfig.symbol}${currencyConfig.minAmount}`);
+    if (!country) {
+      toast.error("Please select your country");
+      return;
+    }
+    if (selectedAmount <= 0) {
+      toast.error("Please enter a valid donation amount");
       return;
     }
 
@@ -156,321 +160,461 @@ export function Donate() {
       return;
     }
 
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsLoading(false);
+    setIsClothesSubmitting(true);
 
-    toast.success("Thank you! We've received your request and will contact you soon.");
-    setDonorEmail("");
-    setDonorName("");
-    setSelectedCategories([]);
+    // Simulate submission - in production this would save to database
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    toast.success("Thank you! We'll contact you shortly to arrange collection.");
+    setClothesStep(4); // Show success step
+    setIsClothesSubmitting(false);
+  };
+
+  const renderClothesStep = () => {
+    switch (clothesStep) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-foreground mb-2">Select Clothing Categories</h3>
+              <p className="text-muted-foreground">Choose the types of clothes you'd like to donate</p>
+            </div>
+
+            <div className="grid gap-4">
+              {CLOTHES_CATEGORIES.map((category) => {
+                const Icon = category.icon;
+                const isSelected = selectedCategories.includes(category.id);
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    onClick={() => toggleCategory(category.id)}
+                    className={`flex items-start gap-4 p-4 rounded-lg border-2 text-left transition-all ${isSelected
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                      }`}
+                  >
+                    <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
+                      }`}>
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold text-foreground">{category.title}</h4>
+                        {isSelected && <CheckCircle2 className="h-5 w-5 text-primary" />}
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">{category.description}</p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {category.examples.map((example) => (
+                          <span key={example} className="text-xs bg-muted px-2 py-1 rounded-full">
+                            {example}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <Button
+              onClick={() => setClothesStep(2)}
+              disabled={selectedCategories.length === 0}
+              className="w-full gap-2"
+              size="lg"
+            >
+              Continue
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-foreground mb-2">Your Contact Details</h3>
+              <p className="text-muted-foreground">We'll use these to arrange collection</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="donor-name">Full Name *</Label>
+                <Input
+                  id="donor-name"
+                  value={donorName}
+                  onChange={(e) => setDonorName(e.target.value)}
+                  placeholder="Your full name"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="donor-email">Email Address *</Label>
+                <Input
+                  id="donor-email"
+                  type="email"
+                  value={donorEmail}
+                  onChange={(e) => setDonorEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="donor-phone">Phone Number</Label>
+                <Input
+                  id="donor-phone"
+                  type="tel"
+                  value={donorPhone}
+                  onChange={(e) => setDonorPhone(e.target.value)}
+                  placeholder="Your phone number"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setClothesStep(1)} className="flex-1">
+                Back
+              </Button>
+              <Button
+                onClick={() => setClothesStep(3)}
+                disabled={!donorName || !donorEmail}
+                className="flex-1 gap-2"
+              >
+                Continue
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-foreground mb-2">Collection Details</h3>
+              <p className="text-muted-foreground">Where should we collect from?</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="donor-address">Collection Address *</Label>
+                <Input
+                  id="donor-address"
+                  value={donorAddress}
+                  onChange={(e) => setDonorAddress(e.target.value)}
+                  placeholder="Your full address"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="clothes-notes">Additional Notes</Label>
+                <Input
+                  id="clothes-notes"
+                  value={clothesNotes}
+                  onChange={(e) => setClothesNotes(e.target.value)}
+                  placeholder="E.g., preferred collection times, number of bags..."
+                />
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="rounded-lg bg-muted p-4 space-y-2">
+              <h4 className="font-medium text-foreground">Donation Summary</h4>
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p><strong>Categories:</strong> {selectedCategories.map(id =>
+                  CLOTHES_CATEGORIES.find(c => c.id === id)?.title
+                ).join(", ")}</p>
+                <p><strong>Name:</strong> {donorName}</p>
+                <p><strong>Email:</strong> {donorEmail}</p>
+                {donorPhone && <p><strong>Phone:</strong> {donorPhone}</p>}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setClothesStep(2)} className="flex-1">
+                Back
+              </Button>
+              <Button
+                onClick={handleClothesSubmit}
+                disabled={!donorAddress || isClothesSubmitting}
+                className="flex-1 gap-2"
+              >
+                {isClothesSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Package className="h-4 w-4" />
+                    Submit Request
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="text-center py-8 space-y-4">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <CheckCircle2 className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-foreground">Thank You!</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Your clothes donation request has been received. Our team will contact you within 48 hours to arrange collection.
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setClothesStep(1);
+                setSelectedCategories([]);
+                setDonorName("");
+                setDonorEmail("");
+                setDonorPhone("");
+                setDonorAddress("");
+                setClothesNotes("");
+              }}
+              className="mt-4"
+            >
+              Donate More Clothes
+            </Button>
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col">
+      <SEO
+        title="Support Our Mission"
+        description="Support sustainable fashion and circular economy initiatives. Donate money or clothes to help reduce textile waste and empower communities in East Africa."
+      />
       <Navbar />
-
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden bg-primary/5 py-16 lg:py-24">
-          <div className="container relative z-10 mx-auto px-4 text-center">
-            <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              Make an <span className="text-primary">Impact</span> Today
-            </h1>
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground">
-              Every donation help us support sustainable projects and local communities.
-              Join us in our mission to create a more sustainable future.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <div className="flex items-center gap-2 rounded-full bg-background px-4 py-2 shadow-sm">
-                <ShieldCheck className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium">100% Secure</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-background px-4 py-2 shadow-sm">
-                <Globe className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium">Global Impact</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-background px-4 py-2 shadow-sm">
-                <Heart className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium">Community Driven</span>
-              </div>
+      <main className="flex-1 py-12">
+        <div className="container max-w-4xl">
+          {/* Hero */}
+          <div className="mb-12 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <Heart className="h-8 w-8 text-primary" />
             </div>
+            <h1 className="mb-4 text-4xl font-bold text-foreground">Support Our Mission</h1>
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+              Your donation helps us create sustainable fashion opportunities, reduce textile waste,
+              and empower communities across East Africa.
+            </p>
           </div>
 
-          {/* Background decoration */}
-          <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-          <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-        </section>
+          {/* Impact Cards */}
+          <div className="mb-12 grid gap-6 sm:grid-cols-3">
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex flex-col items-center p-6 text-center">
+                <Leaf className="mb-3 h-8 w-8 text-primary" />
+                <h3 className="font-semibold text-foreground">Environmental Impact</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  £10 saves 5kg of textiles from landfill
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex flex-col items-center p-6 text-center">
+                <Users className="mb-3 h-8 w-8 text-primary" />
+                <h3 className="font-semibold text-foreground">Community Support</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  £25 provides a day's training for artisans
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex flex-col items-center p-6 text-center">
+                <Globe className="mb-3 h-8 w-8 text-primary" />
+                <h3 className="font-semibold text-foreground">Global Reach</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  £100 funds shipping for partner donations
+                </p>
+              </CardContent>
+            </Card>
+          </div>
 
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="grid gap-12 lg:grid-cols-2">
-              {/* Financial Donation Column */}
-              <div className="rounded-2xl border border-border bg-card p-6 shadow-xl md:p-10">
-                <div className="mb-8 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                    <Coins className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold">Monetary Donation</h2>
-                    <p className="text-sm text-muted-foreground">Support our ongoing projects</p>
-                  </div>
-                </div>
+          {/* Donation Type Tabs */}
+          <Tabs value={donationType} onValueChange={(v) => setDonationType(v as "money" | "clothes")} className="mx-auto max-w-lg">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="money" className="gap-2">
+                <CreditCard className="h-4 w-4" />
+                Donate Money
+              </TabsTrigger>
+              <TabsTrigger value="clothes" className="gap-2">
+                <Shirt className="h-4 w-4" />
+                Donate Clothes
+              </TabsTrigger>
+            </TabsList>
 
-                <form onSubmit={handleDonateSubmit} className="space-y-6">
-                  <div className="space-y-4">
-                    <Label className="text-base">Select Currency</Label>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      {Object.entries(CURRENCY_CONFIG).map(([key, config]) => (
+            <TabsContent value="money">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Make a Donation</CardTitle>
+                  <CardDescription>Choose an amount and payment method. Currency auto-detected based on your country.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Amount Selection */}
+                  <div className="space-y-3">
+                    <Label>Donation Amount ({currencyConfig.code})</Label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {donationAmounts.map((amt, index) => (
                         <Button
-                          key={key}
+                          key={amt}
                           type="button"
-                          variant={currencyKey === key ? "default" : "outline"}
-                          className="h-11 font-semibold"
-                          onClick={() => setCurrencyKey(key)}
+                          variant={selectedAmountIndex === index && !customAmount ? "default" : "outline"}
+                          onClick={() => {
+                            setSelectedAmountIndex(index);
+                            setCustomAmount("");
+                          }}
                         >
-                          {config.code}
+                          {formatPrice(amt, currencyKey)}
                         </Button>
                       ))}
                     </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Label className="text-base">Select Amount</Label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {[10, 20, 50, 100, 250, 500].map((amount) => (
-                        <Button
-                          key={amount}
-                          type="button"
-                          variant={selectedAmount === amount && !customAmount ? "default" : "outline"}
-                          className="h-12 text-lg font-bold"
-                          onClick={() => handleAmountClick(amount)}
-                        >
-                          {currencyConfig.symbol}{amount}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Label htmlFor="custom-amount" className="text-base">Custom Amount</Label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-muted-foreground">
-                        {currencyConfig.symbol}
-                      </span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">{currencySymbol}</span>
                       <Input
-                        id="custom-amount"
                         type="number"
-                        placeholder="Enter amount"
-                        className="h-14 pl-12 text-2xl font-bold"
+                        placeholder="Custom amount"
                         value={customAmount}
-                        onChange={handleCustomAmountChange}
+                        onChange={(e) => setCustomAmount(e.target.value)}
+                        className="pl-10"
+                        min={currencyConfig.minAmount}
                       />
                     </div>
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="you@example.com"
-                          className="pl-10"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Your Name</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          id="name"
-                          placeholder="Full Name"
-                          className="pl-10"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </div>
+                  {/* Country Selection (determines currency) */}
+                  <div className="space-y-2">
+                    <Label htmlFor="country" className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      Country * <span className="text-xs text-muted-foreground ml-2">(determines currency)</span>
+                    </Label>
+                    <Select value={country} onValueChange={setCountry}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Where are you donating from?" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COUNTRIES.map((c) => (
+                          <SelectItem key={c} value={c}>{c}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {/* Payment Method - Simplified to just Stripe */}
+                  <div className="space-y-3">
+                    <Label>Payment Method</Label>
+                    <div className="flex items-center gap-2 rounded-lg border border-primary bg-primary/5 p-3">
+                      <img src={stripeLogo} alt="Stripe" className="h-5 w-auto" />
+                      <span className="text-sm">Secure Checkout</span>
                     </div>
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  {/* Contact Info */}
+                  <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="country">Country</Label>
+                      <Label htmlFor="email">Email *</Label>
                       <Input
-                        id="country"
-                        placeholder="e.g. United Kingdom"
-                        value={country}
-                        onChange={(e) => setCountry(e.target.value)}
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="city">City (Optional)</Label>
+                      <Label htmlFor="name">Name (optional)</Label>
+                      <Input
+                        id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Your name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="city">City (optional)</Label>
                       <Input
                         id="city"
-                        placeholder="e.g. London"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
+                        placeholder="Your city"
                       />
                     </div>
                   </div>
 
                   <Button
-                    type="submit"
-                    className="h-14 w-full text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
-                    disabled={isLoading}
+                    onClick={handleDonate}
+                    disabled={isLoading || !email}
+                    className="w-full gap-2"
+                    size="lg"
                   >
                     {isLoading ? (
                       <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <Loader2 className="h-4 w-4 animate-spin" />
                         Processing...
                       </>
                     ) : (
                       <>
-                        Donate {currencyConfig.symbol}{selectedAmount} Now
-                        <Zap className="ml-2 h-5 w-5" />
+                        <Heart className="h-4 w-4" />
+                        Donate {formatPrice(selectedAmount || 0, currencyKey)}
                       </>
                     )}
                   </Button>
 
-                  <p className="mt-4 text-center text-xs text-muted-foreground">
-                    <ShieldCheck className="mr-1 inline h-3 w-3" />
-                    Secure checkout by Stripe. Taxes may apply.
+                  <p className="text-center text-xs text-muted-foreground">
+                    Your donation is secure and helps support sustainable fashion initiatives. Payments processed by Stripe.
                   </p>
-                </form>
-              </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-              {/* Clothes Donation Column */}
-              <div className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-xl md:p-10">
-                <div className="mb-8 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-950/30">
-                    <ShoppingBag className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold">Donate Clothes</h2>
-                    <p className="text-sm text-muted-foreground">Give your items a second life</p>
-                  </div>
-                </div>
-
-                <div className="flex-1 space-y-8">
-                  <div className="space-y-4">
-                    <Label className="text-base text-foreground font-semibold">What are you donating?</Label>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      {CATEGORIES.map((cat) => (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => toggleCategory(cat.id)}
-                          className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 transition-all hover:border-primary/50 group ${selectedCategories.includes(cat.id)
-                            ? 'border-primary bg-primary/5 shadow-sm'
-                            : 'border-border bg-muted/30 hover:bg-muted/50'
-                            }`}
-                        >
-                          <span className="text-2xl transition-transform group-hover:scale-110">{cat.icon}</span>
-                          <span className="text-xs font-semibold text-foreground/80">{cat.name}</span>
-                          {selectedCategories.includes(cat.id) && (
-                            <div className="absolute top-1 right-1">
-                              <CheckCircle2 className="h-3 w-3 text-primary fill-background" />
-                            </div>
+            <TabsContent value="clothes">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shirt className="h-5 w-5" />
+                    Donate Your Clothes
+                  </CardTitle>
+                  <CardDescription>
+                    Give your pre-loved clothes a second life. We'll collect them from your doorstep.
+                  </CardDescription>
+                  {clothesStep < 4 && (
+                    <div className="flex items-center gap-2 mt-4">
+                      {[1, 2, 3].map((step) => (
+                        <div key={step} className="flex items-center gap-2">
+                          <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${clothesStep >= step
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground"
+                            }`}>
+                            {step}
+                          </div>
+                          {step < 3 && (
+                            <div className={`h-0.5 w-8 ${clothesStep > step ? "bg-primary" : "bg-muted"}`} />
                           )}
-                        </button>
+                        </div>
                       ))}
                     </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Label className="text-base text-foreground font-semibold">Contact Information</Label>
-                    <div className="grid gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="donor-name" className="text-sm">Name</Label>
-                        <Input
-                          id="donor-name"
-                          placeholder="Your Name"
-                          className="bg-muted/30"
-                          value={donorName}
-                          onChange={(e) => setDonorName(e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="donor-email" className="text-sm">Email</Label>
-                        <Input
-                          id="donor-email"
-                          type="email"
-                          placeholder="you@email.com"
-                          className="bg-muted/30"
-                          value={donorEmail}
-                          onChange={(e) => setDonorEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
-                    <h3 className="mb-2 text-sm font-bold text-primary flex items-center gap-2">
-                      <Leaf className="h-4 w-4" />
-                      Why donate clothes?
-                    </h3>
-                    <p className="text-xs leading-relaxed text-muted-foreground">
-                      Textile waste is a major environmental issue. By donating your used clothes,
-                      you help reduce landfill waste and support families in need within our community.
-                    </p>
-                  </div>
-
-                  <Button
-                    className="h-14 w-full text-lg font-bold shadow-lg shadow-orange-500/10 transition-all hover:scale-[1.02] bg-orange-600 hover:bg-orange-700 mt-auto"
-                    onClick={handleClothesSubmit}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Submitting...
-                      </>
-                    ) : (
-                      <>
-                        Schedule Collection
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Impact Section */}
-        <section className="bg-muted/30 py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">Your Impact in Numbers</h2>
-            <div className="grid gap-8 md:grid-cols-3">
-              {[
-                { label: "Trees Planted", value: "12,450", icon: Leaf, color: "text-green-600" },
-                { label: "Community Projects", value: "85", icon: Globe, color: "text-blue-600" },
-                { label: "Lives Touched", value: "45,000+", icon: Heart, color: "text-red-600" },
-              ].map((stat, i) => (
-                <div key={i} className="rounded-2xl bg-background p-8 text-center shadow-sm">
-                  <div className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted`}>
-                    <stat.icon className={`h-8 w-8 ${stat.color}`} />
-                  </div>
-                  <div className="text-3xl font-bold">{stat.value}</div>
-                  <div className="text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  {renderClothesStep()}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
-
       <Footer />
     </div>
   );
-}
+};
 
 export default Donate;

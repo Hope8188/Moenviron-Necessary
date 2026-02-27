@@ -12,6 +12,10 @@ exports.handler = async (event) => {
   }
 
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY is missing from environment variables');
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Payment provider not configured (Missing Secret Key)' }) };
+    }
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
     const baseUrl = process.env.URL || process.env.DEPLOY_URL || 'https://moenviron.com';
 
@@ -45,9 +49,7 @@ exports.handler = async (event) => {
           quantity: 1,
         }],
         mode: 'payment',
-        success_url: isDonation
-          ? `${baseUrl}/donation-success?session_id={CHECKOUT_SESSION_ID}&amount=${amount}`
-          : `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&amount=${amount}&currency=${currency}${isDonation ? '&type=donation' : ''}`,
         cancel_url: isDonation
           ? `${baseUrl}/donate?status=cancelled`
           : `${baseUrl}/cart`,
@@ -127,9 +129,7 @@ exports.handler = async (event) => {
       mode: 'payment',
       customer_email: customerEmail,
       submit_type: isDonation ? 'donate' : 'pay',
-      success_url: isDonation
-        ? `${baseUrl}/donation-success?session_id={CHECKOUT_SESSION_ID}&amount=${total}`
-        : `${baseUrl}/order-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}${isDonation ? '&type=donation' : ''}&amount=${total}&currency=${currency}`,
       cancel_url: isDonation ? `${baseUrl}/donate?status=cancelled` : `${baseUrl}/cart`,
       metadata: {
         customer_name: customerName || '',

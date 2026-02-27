@@ -22,6 +22,16 @@ exports.handler = async (event) => {
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Webhook secret not configured' }) };
     }
 
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY is missing');
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Stripe key not configured' }) };
+    }
+
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('SUPABASE_SERVICE_ROLE_KEY is missing');
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Database key not configured' }) };
+    }
+
     if (!sig) {
       console.error('Missing stripe-signature header');
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing stripe-signature header' }) };
@@ -63,10 +73,10 @@ exports.handler = async (event) => {
         const resend = new Resend(process.env.RESEND_API_KEY);
         const currencySymbol =
           orderData.currency === 'GBP' ? '£' :
-          orderData.currency === 'EUR' ? '€' :
-          orderData.currency === 'USD' ? '$' :
-          orderData.currency === 'KES' ? 'KSh' :
-          orderData.currency;
+            orderData.currency === 'EUR' ? '€' :
+              orderData.currency === 'USD' ? '$' :
+                orderData.currency === 'KES' ? 'KSh' :
+                  orderData.currency;
         const shortOrderId = order.id.slice(0, 8).toUpperCase();
 
         const itemsHtml = (orderData.items || []).map(item => `
