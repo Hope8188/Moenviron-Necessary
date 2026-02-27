@@ -17,7 +17,8 @@ import {
   Mail,
   User,
   Zap,
-  Loader2
+  Loader2,
+  ShoppingBag
 } from "lucide-react";
 import { toast } from "sonner";
 import { redirectToStripeFallback } from "@/utils/stripeFallback";
@@ -367,8 +368,8 @@ export function Donate() {
                           type="button"
                           onClick={() => toggleCategory(cat.id)}
                           className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 transition-all hover:border-primary/50 group ${selectedCategories.includes(cat.id)
-                              ? 'border-primary bg-primary/5 shadow-sm'
-                              : 'border-border bg-muted/30 hover:bg-muted/50'
+                            ? 'border-primary bg-primary/5 shadow-sm'
+                            : 'border-border bg-muted/30 hover:bg-muted/50'
                             }`}
                         >
                           <span className="text-2xl transition-transform group-hover:scale-110">{cat.icon}</span>

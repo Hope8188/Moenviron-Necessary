@@ -15,10 +15,16 @@ export interface PageViewData {
 
 export async function getGeoData() {
   try {
-    const response = await fetch("https://ipapi.co/json/");
+    // ipwho.is is more reliable for client-side CORS requests
+    const response = await fetch("https://ipwho.is/");
     const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to fetch geo data");
+    }
+
     return {
-      country: data.country_name || "Unknown",
+      country: data.country || "Unknown",
       city: data.city || "Unknown",
       region: data.region || "Unknown",
       latitude: data.latitude || 0,
@@ -78,7 +84,7 @@ export async function getAnalytics() {
   if (error) throw error;
 
   const totalViews = data.length;
-  const uniqueVisitors = new Set(data.map((v) => v.visitor_id)).size;
+  const uniqueVisitors = new Set(data.map((v: any) => v.visitor_id || v.ip_hash)).size;
 
   // Calculate top countries
   const countryCounts: Record<string, number> = {};
