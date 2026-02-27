@@ -48,7 +48,7 @@ const CLOTHES_CATEGORIES = [
 
 const Donate = () => {
   const [donationType, setDonationType] = useState<"money" | "clothes">("money");
-  const [selectedAmountIndex, setSelectedAmountIndex] = useState<number>(1);
+  const [selectedAmountIndex, setSelectedAmountIndex] = useState<number>(0);
   const [customAmount, setCustomAmount] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -74,7 +74,7 @@ const Donate = () => {
 
   // Reset amount selection when currency changes (prevents stale custom amounts across currencies)
   useEffect(() => {
-    setSelectedAmountIndex(1);
+    setSelectedAmountIndex(0);
     setCustomAmount("");
   }, [currencyKey]);
   // Convert base GBP amounts to selected currency and guard against Stripe minimums
@@ -105,7 +105,7 @@ const Donate = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/create-checkout", {
+      const response = await fetch("/.netlify/functions/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

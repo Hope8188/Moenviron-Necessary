@@ -348,7 +348,7 @@ export function Checkout() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/create-checkout", {
+      const response = await fetch("/.netlify/functions/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

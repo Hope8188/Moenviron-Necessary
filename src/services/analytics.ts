@@ -15,20 +15,17 @@ export interface PageViewData {
 
 export async function getGeoData() {
   try {
-    // ipwho.is is more reliable for client-side CORS requests
-    const response = await fetch("https://ipwho.is/");
+    // get.geojs.io is free and has no CORS limitations
+    const response = await fetch("https://get.geojs.io/v1/ip/geo.json");
+    if (!response.ok) throw new Error("Failed to fetch geo data");
     const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Failed to fetch geo data");
-    }
 
     return {
       country: data.country || "Unknown",
       city: data.city || "Unknown",
       region: data.region || "Unknown",
-      latitude: data.latitude || 0,
-      longitude: data.longitude || 0,
+      latitude: parseFloat(data.latitude) || 0,
+      longitude: parseFloat(data.longitude) || 0,
     };
   } catch (error) {
     console.error("Error fetching geo data:", error);
