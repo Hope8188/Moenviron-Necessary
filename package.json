@@ -87,7 +87,10 @@
     "estree-walker": "2.0.2",
     "globals": "^15.15.0",
     "magic-string": "^0.30.21",
+<<<<<<< HEAD
     "pg": "^8.19.0",
+=======
+>>>>>>> 3a88c0bad35a948978b784bbbeffb52103055d0c
     "postcss": "^8.5.6",
     "sharp": "^0.34.5",
     "supabase": "^2.76.11",

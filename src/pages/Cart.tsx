@@ -6,7 +6,6 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Trash2, Plus, Minus, ShoppingBag, Leaf, ArrowRight, Loader2 } from "lucide-react";
 import stripeLogo from "@/assets/stripe-logo.webp";
@@ -69,7 +68,6 @@ const Cart = () => {
     0
   );
 
-  // ✅ MATCHES DONATE STRUCTURE EXACTLY
   const handleCheckout = async () => {
     if (!customerEmail) {
       toast.error("Please enter your email address");
@@ -85,26 +83,25 @@ const Cart = () => {
 
     try {
       const currency = cartItems[0]?.currency || "GBP";
+      const response = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: [{
+            id: "cart_order",
+            name: "Moenviron Order",
+            price: total,
+            quantity: 1,
+          }],
+          customerEmail: customerEmail,
+          currency,
+          mode: "checkout_session",
+          isDonation: false,
+        })
+      });
 
-      const { data, error } = await supabase.functions.invoke(
-        "create-checkout",
-        {
-          body: {
-            items: [
-              {
-                id: "cart_order",
-                name: "Moenviron Order",
-                price: total, // 🚨 MAJOR UNITS — SAME AS DONATE
-                quantity: 1,
-              },
-            ],
-            customerEmail: customerEmail,
-            currency,
-            mode: "checkout_session",
-            isDonation: false,
-          },
-        }
-      );
+      const data = await response.json();
+      const error = !response.ok ? data.error : null;
 
       if (error || data?.fallback_required) {
         console.error("Checkout failed:", error || data);
