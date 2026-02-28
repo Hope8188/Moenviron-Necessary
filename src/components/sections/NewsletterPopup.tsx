@@ -18,7 +18,7 @@ export const NewsletterPopup = () => {
 
     const timer = setTimeout(() => {
       setIsOpen(true);
-    }, 3000);
+    }, 15000); // 15s — let visitors browse before asking for email
     return () => clearTimeout(timer);
   }, []);
 

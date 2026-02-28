@@ -51,12 +51,24 @@ This document serves as a persistent record of the Moenviron project architectur
   3. `vercel.json` (Vercel)
 
 ## 🛑 Known Problems & Troubleshooting
-1. **CSP Blocks on Geolocation**: Only `get.geojs.io` is used. Remove references to `ipapi.co` and `ipwho.is` from all CSP directives.
+1. **CSP Blocks on Geolocation**: `get.geojs.io`, `ipapi.co`, and `api.ipify.org` are all in CSP connect-src now.
 2. **Schema Cache**: After altering Supabase tables, run `NOTIFY pgrst, 'reload schema';` in SQL Editor immediately.
 3. **Netlify Build**: Do not add `supabase` CLI to `package.json` devDependencies. Use `npx` instead.
-4. **Admin Analytics Empty**: Caused by missing `SELECT` RLS policy on `page_views`. Run `.gemini/fix_analytics_final.sql`.
+4. **Admin Analytics Empty**: Caused by missing `SELECT` RLS policy on `page_views`. Run `.gemini/fix_supabase_performance.sql`.
 5. **Donations failing for specific countries**: Check the currency decimal config in BOTH `src/lib/currency.ts` AND `supabase/functions/create-checkout/index.ts`. They must match and follow Stripe's actual rules.
 6. **Stripe iframe blocked**: Caused by `Cross-Origin-Embedder-Policy` header. Solution: don't set COEP at all.
+7. **Product page loading forever**: Caused by `trackProductInteraction()` using `.single()` which throws on missing RLS. Fixed by using `.maybeSingle()` and fire-and-forget pattern. Analytics must NEVER block UI rendering.
+8. **product_performance_stats table**: Needs public INSERT/UPDATE + public SELECT RLS. The `.gemini/fix_supabase_performance.sql` script handles this.
+9. **app_role enum**: The PostgreSQL enum may not have all values (moderator, content, etc.). Always use `role::text` casting in RLS policies to avoid "invalid input value for enum" errors. Or run the enum-adding DO block first.
+10. **Newsletter popup timing**: Set to 15 seconds. At 3 seconds, users haven't engaged yet and feel interrupted. 15s = they've scrolled, read, and are more receptive.
+
+## 🛒 Shop & Product Architecture
+- **Size selection**: Products support XS, S, M, L, XL, XXL. Size is stored in cart items.
+- **Cart format** in localStorage key `moenviron-cart`: `{ id, name, price, currency, quantity, size, image_url, carbon_offset_kg }`
+- **Quick-add overlay**: On shop grid, clicking + opens an in-card size selector with "Add to Bag — M" button.
+- **Sort options**: Newest, Price Low→High, Price High→Low, Name A-Z.
+- **Filter panel**: Expandable with size buttons + sort dropdown.
+- **Mobile CTA**: Always-visible ShoppingBag icon on mobile (no hover dependency).
 
 ## 🛠️ Essential Commands
 - **Deploy Edge Functions**: `npx supabase functions deploy create-checkout --project-ref wmeijbrqjuhvnksiijcz`
@@ -64,9 +76,17 @@ This document serves as a persistent record of the Moenviron project architectur
 - **Set Secrets**: `npx supabase secrets set KEY=VALUE --project-ref wmeijbrqjuhvnksiijcz`
 - **Build Frontend**: `npm run build`
 - **Push to Deploy**: `git push origin main` (triggers Netlify auto-deploy)
+- **Run SQL Fix**: Paste `.gemini/fix_supabase_performance.sql` into Supabase SQL Editor
 
 ## 📝 Form Field Best Practices
 All `<input>` elements must have:
 - `id` attribute (matches the `<label htmlFor>`)
 - `name` attribute (enables form submission and autofill)
 - `autoComplete` attribute (e.g., `email`, `name`, `current-password`, `new-password`, `tel`, `street-address`)
+
+## 🔍 SEO & AI Crawlability
+- **robots.txt**: Allows all AI crawlers (GPTBot, Claude, PerplexityBot, Applebot-Extended, Meta-ExternalAgent, CCBot, Googlebot, Bingbot)
+- **sitemap.xml**: Updated monthly. Shop page has priority 0.95.
+- **Structured Data**: Organization, WebSite, Product (with offers, shipping, manufacturer), Article, BreadcrumbList schemas.
+- **Geo targeting**: meta tags for GB-WIL region, ICBM coordinates.
+- **Multi-locale**: OG locale supports en_GB, en_KE, sw_KE.
