@@ -11,32 +11,37 @@ const getSessionId = () => {
   return sessionId;
 };
 
+/**
+ * Track product interactions (views, add_to_cart, purchases).
+ * This is fire-and-forget — errors are silently logged, never thrown.
+ * This prevents analytics failures from breaking the product page.
+ */
 export const trackProductInteraction = async (
-  productId: string, 
-  type: ProductInteractionType, 
+  productId: string,
+  type: ProductInteractionType,
   productName?: string,
   revenue?: number
-) => {
+): Promise<void> => {
   try {
     const today = new Date().toISOString().split('T')[0];
-    
+
     // Check if a record exists for this product and date
-    const { data: existing, error: fetchError } = await supabase
+    const { data: existing, error: fetchError } = await (supabase as any)
       .from('product_performance_stats')
       .select('*')
       .eq('product_id', productId)
       .eq('date', today)
-      .single();
+      .maybeSingle();
 
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      console.error('Error checking product stats:', fetchError);
+    if (fetchError) {
+      // Silently fail — don't block the UI
+      console.debug('Analytics fetch skipped:', fetchError.message);
       return;
     }
 
     if (existing) {
-      // Update existing record
       const updates: Record<string, number> = {};
-      
+
       if (type === 'view') {
         updates.views = (existing.views || 0) + 1;
       } else if (type === 'add_to_cart') {
@@ -48,41 +53,24 @@ export const trackProductInteraction = async (
         }
       }
 
-      const { error: updateError } = await supabase
+      await (supabase as any)
         .from('product_performance_stats')
         .update(updates)
         .eq('id', existing.id);
-
-      if (updateError) {
-        console.error('Error updating product stats:', updateError);
-      }
     } else {
-      // Insert new record
-      const newRecord: {
-        product_id: string;
-        date: string;
-        views: number;
-        add_to_cart: number;
-        purchases: number;
-        revenue: number;
-      } = {
-        product_id: productId,
-        date: today,
-        views: type === 'view' ? 1 : 0,
-        add_to_cart: type === 'add_to_cart' ? 1 : 0,
-        purchases: type === 'purchase' ? 1 : 0,
-        revenue: type === 'purchase' && revenue ? revenue : 0
-      };
-
-      const { error: insertError } = await supabase
+      await (supabase as any)
         .from('product_performance_stats')
-        .insert(newRecord);
-
-      if (insertError) {
-        console.error('Error inserting product stats:', insertError);
-      }
+        .insert({
+          product_id: productId,
+          date: today,
+          views: type === 'view' ? 1 : 0,
+          add_to_cart: type === 'add_to_cart' ? 1 : 0,
+          purchases: type === 'purchase' ? 1 : 0,
+          revenue: type === 'purchase' && revenue ? revenue : 0
+        });
     }
-  } catch (err) {
-    console.error(`Unexpected error tracking product ${type}:`, err);
+  } catch {
+    // Fire-and-forget: never throw from analytics
+    console.debug('Product analytics tracking skipped');
   }
 };
