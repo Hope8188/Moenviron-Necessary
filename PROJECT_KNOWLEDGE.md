@@ -14,6 +14,7 @@ This document serves as a persistent record of the Moenviron project architectur
 - **Mechanism**: Stripe Checkout Sessions for both shop orders and donations.
 - **Edge Functions**: `supabase/functions/create-checkout` and `supabase/functions/stripe-webhook`.
 - **Secrets**: In Supabase Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `PUBLIC_SITE_URL`.
+- **Webhook URL Warning**: Never use `.netlify/functions/stripe-webhook` in the Stripe dashboard! We migrated backend logic. The endpoint URL **must** be `https://[PROJECT_REF].supabase.co/functions/v1/stripe-webhook`.
 - **Webhook Events**: `checkout.session.completed`, `payment_intent.succeeded`.
 - **CRITICAL — Currency Decimal Rules** (verified against Stripe docs Feb 2026):
   | Currency | Stripe Classification | `zeroDecimal` | Notes |
