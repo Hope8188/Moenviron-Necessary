@@ -139,7 +139,94 @@ serve(async (req) => {
             }
         }
 
+        if (action === 'fix_schema') {
+            console.log('Running schema fixes...')
+            const results: string[] = []
+
+            // 1. Add responsibilities column to user_roles if missing
+            try {
+                // Use a raw query via supabase-js - select to check if column exists
+                const { data: testData, error: testError } = await supabaseClient
+                    .from('user_roles')
+                    .select('responsibilities')
+                    .limit(0)
+
+                if (testError && testError.message.includes('does not exist')) {
+                    // Column doesn't exist - we need to add it via Management API
+                    const dbUrl = Deno.env.get('SUPABASE_DB_URL')
+                    if (dbUrl) {
+                        // Use postgres connection directly via Deno
+                        const { Client } = await import("https://deno.land/x/postgres@v0.17.0/mod.ts")
+                        const client = new Client(dbUrl)
+                        await client.connect()
+                        await client.queryObject(`ALTER TABLE public.user_roles ADD COLUMN IF NOT EXISTS responsibilities TEXT;`)
+
+                        // Add enum values
+                        const enumValues = ['marketing', 'shipping', 'support', 'content', 'moderator']
+                        for (const val of enumValues) {
+                            try {
+                                await client.queryObject(`ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS '${val}';`)
+                                results.push(`Added enum value: ${val}`)
+                            } catch (e) {
+                                results.push(`Enum value ${val}: ${e.message}`)
+                            }
+                        }
+
+                        // Recreate is_admin with all roles
+                        await client.queryObject(`
+                            CREATE OR REPLACE FUNCTION public.is_admin(_user_id UUID)
+                            RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
+                            AS $fn$ SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role::text IN ('admin','moderator','marketing','shipping','support','content')) $fn$;
+                        `)
+
+                        // Fix RLS policies on user_roles
+                        await client.queryObject(`DROP POLICY IF EXISTS "Only admins can manage roles" ON public.user_roles;`)
+                        await client.queryObject(`DROP POLICY IF EXISTS "Users can view their own roles" ON public.user_roles;`)
+                        await client.queryObject(`DROP POLICY IF EXISTS "Admins can insert roles" ON public.user_roles;`)
+                        await client.queryObject(`DROP POLICY IF EXISTS "Admins can update roles" ON public.user_roles;`)
+                        await client.queryObject(`DROP POLICY IF EXISTS "Admins can delete roles" ON public.user_roles;`)
+
+                        await client.queryObject(`CREATE POLICY "Users can view their own roles" ON public.user_roles FOR SELECT TO authenticated USING (user_id = auth.uid() OR public.is_admin(auth.uid()));`)
+                        await client.queryObject(`CREATE POLICY "Admins can insert roles" ON public.user_roles FOR INSERT TO authenticated WITH CHECK (public.is_admin(auth.uid()));`)
+                        await client.queryObject(`CREATE POLICY "Admins can update roles" ON public.user_roles FOR UPDATE TO authenticated USING (public.is_admin(auth.uid()));`)
+                        await client.queryObject(`CREATE POLICY "Admins can delete roles" ON public.user_roles FOR DELETE TO authenticated USING (public.is_admin(auth.uid()));`)
+
+                        // Reload PostgREST schema cache  
+                        await client.queryObject(`NOTIFY pgrst, 'reload schema';`)
+
+                        await client.end()
+                        results.push('Added responsibilities column')
+                        results.push('Fixed RLS policies')
+                        results.push('Reloaded schema cache')
+                    } else {
+                        results.push('SUPABASE_DB_URL not available - cannot alter schema')
+                    }
+                } else {
+                    results.push('responsibilities column already exists')
+                }
+            } catch (e) {
+                results.push(`Schema fix error: ${e.message}`)
+            }
+
+            return new Response(JSON.stringify({ message: 'Schema fix completed', results }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+        }
+
         if (action === 'execute_sql') {
+            // Try using direct postgres connection if available
+            const dbUrl = Deno.env.get('SUPABASE_DB_URL')
+            if (dbUrl) {
+                const { Client } = await import("https://deno.land/x/postgres@v0.17.0/mod.ts")
+                const client = new Client(dbUrl)
+                await client.connect()
+                const result = await client.queryObject(sql)
+                await client.end()
+                return new Response(JSON.stringify({ message: 'SQL Executed', data: result.rows }), {
+                    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                })
+            }
+            // Fallback to RPC
             const { data, error } = await supabaseClient.rpc('exec_sql', { sql_query: sql })
             if (error) throw error
             return new Response(JSON.stringify({ message: 'SQL Executed', data }), {
