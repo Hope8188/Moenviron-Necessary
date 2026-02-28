@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Loader2, Plus, Pencil, Trash2, FileText, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 
 interface Report {
   id: string;
@@ -154,8 +155,8 @@ export function ReportManager() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Type</Label>
-                  <Select 
-                    value={formData.report_type || ""} 
+                  <Select
+                    value={formData.report_type || ""}
                     onValueChange={(value) => setFormData({ ...formData, report_type: value })}
                   >
                     <SelectTrigger>
@@ -171,8 +172,8 @@ export function ReportManager() {
                 </div>
                 <div className="space-y-2">
                   <Label>Status</Label>
-                  <Select 
-                    value={formData.status || ""} 
+                  <Select
+                    value={formData.status || ""}
                     onValueChange={(value) => setFormData({ ...formData, status: value })}
                   >
                     <SelectTrigger>
@@ -195,13 +196,21 @@ export function ReportManager() {
                   rows={3}
                 />
               </div>
-              <div className="space-y-2">
-                <Label>File URL</Label>
-                <Input
-                  value={formData.file_url || ""}
-                  onChange={(e) => setFormData({ ...formData, file_url: e.target.value })}
-                  placeholder="Link to PDF or document"
-                />
+              <div className="space-y-4">
+                <Label>Report Document (PDF)</Label>
+                <div className="pt-1">
+                  <ImageUploader
+                    currentUrl={formData.file_url || ""}
+                    onUpload={(url) => setFormData({ ...formData, file_url: url })}
+                    label=""
+                  />
+                  <div className="text-xs text-center text-muted-foreground uppercase tracking-wider font-semibold py-4">— OR —</div>
+                  <Input
+                    value={formData.file_url || ""}
+                    onChange={(e) => setFormData({ ...formData, file_url: e.target.value })}
+                    placeholder="Paste external link to PDF or document"
+                  />
+                </div>
               </div>
               <div className="flex justify-end gap-2 pt-4">
                 <Button variant="outline" onClick={resetForm}>Cancel</Button>
