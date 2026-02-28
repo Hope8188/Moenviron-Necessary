@@ -9,7 +9,6 @@ import { Loader2, Search, Mail, Download, Trash2, UserPlus, Users, CheckCircle2,
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ResendIntegration } from "./ResendIntegration";
 import { MailerLiteIntegration } from "./MailerLiteIntegration";
 
 interface Subscriber {
@@ -65,9 +64,9 @@ export function SubscribersManager() {
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase
         .from("newsletter_subscribers")
-        .update({ 
-          is_active, 
-          unsubscribed_at: is_active ? null : new Date().toISOString() 
+        .update({
+          is_active,
+          unsubscribed_at: is_active ? null : new Date().toISOString()
         })
         .eq("id", id);
       if (error) throw error;
@@ -97,11 +96,11 @@ export function SubscribersManager() {
     const activeSubscribers = subscribers.filter(s => s.is_active);
     const csv = [
       "Email,Name,Subscribed At,Source",
-      ...activeSubscribers.map(s => 
+      ...activeSubscribers.map(s =>
         `${s.email},${s.name || ""},${new Date(s.subscribed_at).toLocaleDateString()},${s.source}`
       )
     ].join("\n");
-    
+
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -128,14 +127,13 @@ export function SubscribersManager() {
     );
   }
 
-    return (
-      <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2">
-          <ResendIntegration />
-          <MailerLiteIntegration />
-        </div>
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-1">
+        <MailerLiteIntegration />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
@@ -289,9 +287,9 @@ export function SubscribersManager() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => toggleActiveMutation.mutate({ 
-                        id: subscriber.id, 
-                        is_active: !subscriber.is_active 
+                      onClick={() => toggleActiveMutation.mutate({
+                        id: subscriber.id,
+                        is_active: !subscriber.is_active
                       })}
                       className={subscriber.is_active ? "text-orange-500 hover:text-orange-600" : "text-green-500 hover:text-green-600"}
                     >

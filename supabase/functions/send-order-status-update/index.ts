@@ -24,12 +24,12 @@ serve(async (req) => {
   }
 
   try {
-    const { 
-      orderId, 
-      userEmail, 
-      userName, 
-      newStatus, 
-      totalAmount, 
+    const {
+      orderId,
+      userEmail,
+      userName,
+      newStatus,
+      totalAmount,
       currency = "GBP",
       trackingNumber,
       trackingCarrier,
@@ -50,7 +50,7 @@ serve(async (req) => {
       },
       shipped: {
         subject: "Your order has been shipped!",
-        message: trackingNumber 
+        message: trackingNumber
           ? `Great news! Your order is on its way. Track it with: ${trackingCarrier || "carrier"} - ${trackingNumber}`
           : "Great news! Your order is on its way.",
       },
@@ -74,7 +74,7 @@ serve(async (req) => {
     };
 
     const currencySymbol = currency === "KES" ? "KSh" : "£";
-    
+
     const emailHtml = `
       <!DOCTYPE html>
       <html>
@@ -128,29 +128,7 @@ serve(async (req) => {
       newStatus,
     });
 
-    // If Resend API key is available, send the email
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    if (resendApiKey) {
-      const resendResponse = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify({
-          from: "Moenviron <orders@moenviron.com>",
-          to: [userEmail],
-          subject: statusInfo.subject,
-          html: emailHtml,
-        }),
-      });
-
-      if (!resendResponse.ok) {
-        const errorData = await resendResponse.text();
-        console.error("Resend API error:", errorData);
-        // Don't fail the request, just log the error
-      }
-    }
+    // Order status logged. Future email notifications can be routed to a generic SMTP/MailerLite here.
 
     return new Response(
       JSON.stringify({ success: true, message: "Status update processed" }),

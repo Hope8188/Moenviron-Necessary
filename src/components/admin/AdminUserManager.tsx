@@ -240,7 +240,7 @@ export function AdminUserManager() {
           });
           if (fnError) {
             console.error("Failed to send invite email:", fnError);
-            toast.error("Invitation saved but email failed to send. Please ensure 'send-invite-email' function is deployed.");
+            toast.error("Invitation saved but email delivery failed.");
           }
         } catch (emailError) {
           console.error("Failed to send invite email:", emailError);

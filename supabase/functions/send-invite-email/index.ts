@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,64 +20,45 @@ serve(async (req) => {
   }
 
   try {
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    if (!resendApiKey) {
-      throw new Error("RESEND_API_KEY not configured");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error("Missing Supabase configuration");
     }
 
     const { email, role, responsibilities }: InviteRequest = await req.json();
 
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
-    const fromName = Deno.env.get("RESEND_FROM_NAME") || "Moenviron Team";
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendApiKey}`,
+    // Call Supabase's native invite API
+    // This sends an email using the built-in Supabase auth template 
+    const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+      data: {
+        role,
+        responsibilities,
+        is_admin_invited: true
       },
-      body: JSON.stringify({
-        from: `${fromName} <${fromEmail}>`,
-        to: [email],
-        subject: `You've been invited to join Moenviron as ${role}`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Invitation</title>
-          </head>
-          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #1a5f2a 0%, #2d8f3f 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-              <h1 style="color: white; margin: 0;">Welcome to Moenviron</h1>
-            </div>
-            <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-              <h2 style="color: #1a5f2a;">You've been invited!</h2>
-              <p>You have been invited to join the Moenviron team as: <strong>${role}</strong></p>
-              ${responsibilities ? `<p><strong>Responsibilities:</strong> ${responsibilities}</p>` : ''}
-              <p>Please sign up to accept your invitation.</p>
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="${req.headers.get("origin") || "https://moenviron.com"}/auth?type=signup&email=${email}" style="background-color: #1a5f2a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Create Account</a>
-              </div>
-              <p style="font-size: 12px; color: #666; text-align: center;">
-                If you didn't expect this invitation, you can ignore this email.
-              </p>
-            </div>
-          </body>
-          </html>
-        `,
-      }),
+      // Optionally redirectTo can be added if needed, but defaults to SITE_URL
     });
 
-    if (!res.ok) {
-      const error = await res.text();
-      throw new Error("Failed to send email: " + error);
+    if (error) {
+      throw error;
     }
 
-    const data = await res.json();
+    // You could also directly assign them in your admin_users tables here or via a database trigger 
+    // when they confirm their email. For now, we update admin_users table preemptively so they get access:
+    const { error: dbError } = await supabaseAdmin
+      .from('admin_users')
+      .upsert({ id: data.user.id, email: data.user.email, role: role, is_active: true });
+
+    // Ignore dbError if it fails (e.g. because they already exist)
+    if (dbError) {
+      console.error("Warning: Could not add to admin_users table directly:", dbError);
+    }
 
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify({ success: true, message: "Invitation sent via Supabase", user: data.user }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
