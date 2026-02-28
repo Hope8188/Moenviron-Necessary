@@ -46,15 +46,15 @@ serve(async (req) => {
       throw error;
     }
 
-    // You could also directly assign them in your admin_users tables here or via a database trigger 
-    // when they confirm their email. For now, we update admin_users table preemptively so they get access:
+    // You could also directly assign them in your user_roles tables here or via a database trigger 
+    // when they confirm their email. For now, we update user_roles table preemptively so they get access:
     const { error: dbError } = await supabaseAdmin
-      .from('admin_users')
-      .upsert({ id: data.user.id, email: data.user.email, role: role, is_active: true });
+      .from('user_roles')
+      .upsert({ user_id: data.user.id, role: role, responsibilities: responsibilities || null });
 
     // Ignore dbError if it fails (e.g. because they already exist)
     if (dbError) {
-      console.error("Warning: Could not add to admin_users table directly:", dbError);
+      console.error("Warning: Could not add to user_roles table directly:", dbError);
     }
 
     return new Response(
