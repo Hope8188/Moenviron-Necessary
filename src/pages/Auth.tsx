@@ -121,11 +121,13 @@ const Auth = () => {
                       <Label htmlFor="signin-email">Email</Label>
                       <Input
                         id="signin-email"
+                        name="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
                         disabled={isSubmitting}
+                        autoComplete="email"
                       />
                       {errors.email && (
                         <p className="mt-1 text-sm text-destructive">{errors.email}</p>
@@ -135,11 +137,13 @@ const Auth = () => {
                       <Label htmlFor="signin-password">Password</Label>
                       <Input
                         id="signin-password"
+                        name="password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
                         disabled={isSubmitting}
+                        autoComplete="current-password"
                       />
                       {errors.password && (
                         <p className="mt-1 text-sm text-destructive">{errors.password}</p>
@@ -164,11 +168,13 @@ const Auth = () => {
                       <Label htmlFor="signup-email">Email</Label>
                       <Input
                         id="signup-email"
+                        name="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
                         disabled={isSubmitting}
+                        autoComplete="email"
                       />
                       {errors.email && (
                         <p className="mt-1 text-sm text-destructive">{errors.email}</p>
@@ -178,11 +184,13 @@ const Auth = () => {
                       <Label htmlFor="signup-password">Password</Label>
                       <Input
                         id="signup-password"
+                        name="password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
                         disabled={isSubmitting}
+                        autoComplete="new-password"
                       />
                       {errors.password && (
                         <p className="mt-1 text-sm text-destructive">{errors.password}</p>

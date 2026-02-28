@@ -56,9 +56,9 @@ const AdminAuth = () => {
 
     setIsSubmitting(true);
     setAuthError(null);
-    
+
     const { error } = await signIn(email, password);
-    
+
     if (error) {
       setIsSubmitting(false);
       if (error.message.includes("Invalid login credentials")) {
@@ -119,17 +119,19 @@ const AdminAuth = () => {
                   <AlertDescription>{authError}</AlertDescription>
                 </Alert>
               )}
-              
+
               <form onSubmit={handleAdminSignIn} className="space-y-4">
                 <div>
                   <Label htmlFor="admin-email">Email</Label>
                   <Input
                     id="admin-email"
+                    name="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@example.com"
                     disabled={isSubmitting}
+                    autoComplete="email"
                   />
                   {errors.email && (
                     <p className="mt-1 text-sm text-destructive">{errors.email}</p>
@@ -139,11 +141,13 @@ const AdminAuth = () => {
                   <Label htmlFor="admin-password">Password</Label>
                   <Input
                     id="admin-password"
+                    name="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     disabled={isSubmitting}
+                    autoComplete="current-password"
                   />
                   {errors.password && (
                     <p className="mt-1 text-sm text-destructive">{errors.password}</p>
@@ -160,7 +164,7 @@ const AdminAuth = () => {
                   )}
                 </Button>
               </form>
-              
+
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
                   Not an admin?{" "}

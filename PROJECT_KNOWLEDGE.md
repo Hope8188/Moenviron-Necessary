@@ -3,38 +3,70 @@
 This document serves as a persistent record of the Moenviron project architecture, integrated services, and known pitfalls to ensure consistent development and avoid repeating past errors.
 
 ## 🏗️ Core Architecture Overview
-- **Frontend**: React + Vite + TypeScript.
-- **Backend / API**: Fully migrated from Netlify Functions to **Supabase Edge Functions** for better secret management and database proximity.
+- **Frontend**: React + Vite + TypeScript + Tailwind CSS + Lucide Icons.
+- **Backend / API**: **Supabase Edge Functions** (migrated from Netlify Functions).
 - **Database**: Supabase (PostgreSQL) with Row Level Security (RLS) enabled.
-- **Deployment**: Netlify (Frontend) + Supabase (Functions & Database).
+- **Deployment**: Netlify (frontend hosting) + Supabase (Edge Functions & Database).
+- **Supabase Project Ref**: `wmeijbrqjuhvnksiijcz`
+- **Live Domain**: `https://moenviron.com`
 
 ## 💳 Stripe Integration
-- **Mechanism**: Uses Stripe Checkout Sessions for both one-off shop orders and donations.
-- **Secrets**: Managed via Supabase Secrets (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`). 
-- **Webhook**: Located at `supabase/functions/stripe-webhook`. It handles `checkout.session.completed` and `payment_intent.succeeded`.
-- **Currency Handling**: Supports multiple currencies (GBP, KES, UGX, etc.). 
-    - *Crucial*: Stripe requires amounts in the smallest currency unit (cents/pence).
-    - *Zero-Decimal Currencies*: UGX and RWF are zero-decimal in Stripe. KES is **not** (it has cents).
-- **Payment Link Fallback**: If the dynamic checkout fails, the app falls back to a static Stripe Payment Link.
+- **Mechanism**: Stripe Checkout Sessions for both shop orders and donations.
+- **Edge Functions**: `supabase/functions/create-checkout` and `supabase/functions/stripe-webhook`.
+- **Secrets**: In Supabase Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `PUBLIC_SITE_URL`.
+- **Webhook Events**: `checkout.session.completed`, `payment_intent.succeeded`.
+- **CRITICAL — Currency Decimal Rules** (verified against Stripe docs Feb 2026):
+  | Currency | Stripe Classification | `zeroDecimal` | Notes |
+  |----------|----------------------|---------------|-------|
+  | GBP, USD, EUR | Standard 2-decimal | `false` | amount × 100 |
+  | KES | Standard 2-decimal | `false` | amount × 100 |
+  | UGX | **Special case** | `false` | Despite being listed as zero-decimal, Stripe requires × 100 for backward compatibility |
+  | TZS | Standard 2-decimal | `false` | amount × 100 |
+  | RWF | Truly zero-decimal | `true` | send raw amount |
+  | NGN, ZAR, GHS, ETB | Standard 2-decimal | `false` | amount × 100 |
+- **Lesson**: Always check https://docs.stripe.com/currencies — the "zero-decimal" list has special cases.
 
 ## 📊 Analytics & Geolocation
-- **Geolocation**: Uses `https://get.geojs.io/v1/ip/geo.json` to bypass CORS issues present in previous providers (ipwho.is, ipapi.co).
-- **Tracking**: `trackPageView` in `analytics.ts` logs visits to the `page_views` table.
-- **Schema Pitfall**: The `page_views` table requires the following columns: `page_path`, `referrer`, `visitor_id`, `session_id`, `user_agent`, `country`, `city`, `region`, `latitude`, `longitude`, `device_type`.
+- **Geolocation Provider**: `https://get.geojs.io/v1/ip/geo.json` (previous providers ipwho.is and ipapi.co caused CORS/CSP blocks).
+- **Tracking Function**: `trackPageView()` in `src/services/analytics.ts` → inserts into `page_views` table.
+- **Admin Dashboard**: `getAnalytics()` in `src/services/analytics.ts` → reads from `page_views` table.
+- **Required `page_views` columns**: `page_path`, `referrer`, `visitor_id`, `session_id`, `user_agent`, `country`, `city`, `region`, `latitude`, `longitude`, `device_type`, `ip_hash`, `created_at`.
+- **RLS Policies Required**:
+  - `INSERT` policy for `public` role (anonymous visitors write page views).
+  - `SELECT` policy for `authenticated` role (admins read analytics data).
+  - **Previous bug**: Only INSERT policy existed — admin dashboard returned 0 rows.
 
 ## ✉️ Transactional Emails
 - **Service**: Resend.
-- **Logic**: Handled within the `stripe-webhook` edge function.
-- **Templates**: Dynamic HTML templates for order confirmations and status updates.
+- **Logic**: Handled within `stripe-webhook` edge function.
+
+## 🔐 Security Headers (IMPORTANT)
+- **COOP**: Must be `same-origin-allow-popups` — Stripe uses popups for 3D Secure verification. Using `same-origin` breaks Stripe.
+- **COEP**: Do **NOT** set `Cross-Origin-Embedder-Policy`. Stripe's `m-outer` iframe doesn't set CORP headers, so COEP blocks it.
+- **CORP**: Set to `cross-origin` so external resources (Stripe, Unsplash, etc.) can load.
+- **SharedArrayBuffer warning**: This is cosmetic (from ONNX/WASM libraries), not a security issue. Do not break Stripe to fix it.
+- **CSP**: All three CSP locations must stay in sync:
+  1. `index.html` `<meta>` tag
+  2. `public/_headers` (Netlify)
+  3. `vercel.json` (Vercel)
 
 ## 🛑 Known Problems & Troubleshooting
-1. **CSP Blocks**: Content Security Policy in `index.html` and `public/_headers` must whitelist `get.geojs.io` and `*.supabase.co`.
-2. **Schema Cache**: After adding columns to Supabase tables, you **MUST** run `NOTIFY pgrst, 'reload schema';` in the SQL Editor to stop "column not found" errors.
-3. **Netlify Build Errors**: Avoid including heavy binaries (like `supabase` CLI) in `package.json` devDependencies. Use `npx` for CLI commands instead.
-4. **Interactive Login**: Stripe and Supabase require interactive login (2FA/SSO), which browser agents can struggle with. Automated secret retrieval is limited.
-5. **Currency Handling (African markets)**: KES is a 2-decimal currency in Stripe, while UGX and RWF are zero-decimal. Our Edge Function (Step 1515) accounts for this mismatch with a manual lookup.
-6. **Fallback Redirects**: The Edge Function's `GET` handler **must** return a `302 Found` with a `Location` header to correctly redirect the browser from fallback links (Direct redirection vs returning JSON).
+1. **CSP Blocks on Geolocation**: Only `get.geojs.io` is used. Remove references to `ipapi.co` and `ipwho.is` from all CSP directives.
+2. **Schema Cache**: After altering Supabase tables, run `NOTIFY pgrst, 'reload schema';` in SQL Editor immediately.
+3. **Netlify Build**: Do not add `supabase` CLI to `package.json` devDependencies. Use `npx` instead.
+4. **Admin Analytics Empty**: Caused by missing `SELECT` RLS policy on `page_views`. Run `.gemini/fix_analytics_final.sql`.
+5. **Donations failing for specific countries**: Check the currency decimal config in BOTH `src/lib/currency.ts` AND `supabase/functions/create-checkout/index.ts`. They must match and follow Stripe's actual rules.
+6. **Stripe iframe blocked**: Caused by `Cross-Origin-Embedder-Policy` header. Solution: don't set COEP at all.
 
 ## 🛠️ Essential Commands
-- **Deploy Functions**: `npx supabase functions deploy <name> --project-ref wmeijbrqjuhvnksiijcz`
+- **Deploy Edge Functions**: `npx supabase functions deploy create-checkout --project-ref wmeijbrqjuhvnksiijcz`
+- **Deploy Webhook**: `npx supabase functions deploy stripe-webhook --project-ref wmeijbrqjuhvnksiijcz`
 - **Set Secrets**: `npx supabase secrets set KEY=VALUE --project-ref wmeijbrqjuhvnksiijcz`
+- **Build Frontend**: `npm run build`
+- **Push to Deploy**: `git push origin main` (triggers Netlify auto-deploy)
+
+## 📝 Form Field Best Practices
+All `<input>` elements must have:
+- `id` attribute (matches the `<label htmlFor>`)
+- `name` attribute (enables form submission and autofill)
+- `autoComplete` attribute (e.g., `email`, `name`, `current-password`, `new-password`, `tel`, `street-address`)

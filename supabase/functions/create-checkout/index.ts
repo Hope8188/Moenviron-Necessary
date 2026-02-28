@@ -15,8 +15,8 @@ const CURRENCY_CONFIG: Record<string, { zeroDecimal: boolean }> = {
     usd: { zeroDecimal: false },
     eur: { zeroDecimal: false },
     kes: { zeroDecimal: false }, // KES is 2-decimal in Stripe
-    ugx: { zeroDecimal: true },
-    tzs: { zeroDecimal: true }, // TZS is usually treated as zero-decimal by Stripe
+    ugx: { zeroDecimal: false }, // UGX: Stripe requires ×100 for backward compatibility
+    tzs: { zeroDecimal: false }, // TZS: standard two-decimal currency in Stripe
     rwf: { zeroDecimal: true },
     ngn: { zeroDecimal: false },
     zar: { zeroDecimal: false },
