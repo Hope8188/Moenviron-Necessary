@@ -22,18 +22,26 @@ export function ImageUploader({ onUpload, currentUrl, label = "Image" }: ImageUp
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
+    const isImage = file.type.startsWith("image/");
+    const isDoc = file.type === "application/pdf" || file.type.includes("msword") || file.name.endsWith(".pdf") || file.name.endsWith(".doc") || file.name.endsWith(".docx");
+
+    if (!isImage && !isDoc) {
+      toast.error("Please select an image or document (PDF/DOC)");
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be less than 5MB");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File must be less than 10MB");
       return;
     }
 
     setIsUploading(true);
-    setPreview(URL.createObjectURL(file));
+
+    if (isImage) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview('document_placeholder');
+    }
 
     try {
       const fileExt = file.name.split(".").pop();
@@ -52,10 +60,10 @@ export function ImageUploader({ onUpload, currentUrl, label = "Image" }: ImageUp
 
       setUploadedUrl(publicUrl);
       onUpload?.(publicUrl);
-      toast.success("Image uploaded successfully!");
+      toast.success("File uploaded successfully!");
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("Failed to upload image");
+      toast.error("Failed to upload file");
       setPreview(null);
     } finally {
       setIsUploading(false);
@@ -93,21 +101,32 @@ export function ImageUploader({ onUpload, currentUrl, label = "Image" }: ImageUp
   return (
     <div className="space-y-3">
       <Label>{label}</Label>
-      
+
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className={`relative rounded-lg border-2 border-dashed transition-colors ${
-          isUploading ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
-        }`}
+        className={`relative rounded-lg border-2 border-dashed transition-colors ${isUploading ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+          }`}
       >
         {preview ? (
-          <div className="relative">
-            <img
-              src={preview}
-              alt="Preview"
-              className="h-40 w-full rounded-lg object-cover"
-            />
+          <div className="relative flex flex-col items-center justify-center p-8 bg-zinc-50 rounded-lg">
+            {preview === 'document_placeholder' || preview?.includes('.pdf') || preview?.includes('.doc') ? (
+              <div className="flex flex-col items-center justify-center py-4">
+                <div className="rounded-full bg-primary/10 p-4 mb-3">
+                  <Upload className="h-8 w-8 text-primary" />
+                </div>
+                <p className="text-sm font-medium text-foreground">Document Uploaded Successfully</p>
+                <p className="text-xs text-muted-foreground mt-1 text-center truncate max-w-[250px]">
+                  {uploadedUrl ? uploadedUrl.split('/').pop() : 'Ready to submit'}
+                </p>
+              </div>
+            ) : (
+              <img
+                src={preview}
+                alt="Preview"
+                className="h-40 w-full rounded-lg object-cover"
+              />
+            )}
             <Button
               type="button"
               variant="destructive"
@@ -128,15 +147,15 @@ export function ImageUploader({ onUpload, currentUrl, label = "Image" }: ImageUp
             <div className="rounded-full bg-muted p-3">
               <Upload className="h-6 w-6 text-muted-foreground" />
             </div>
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-sm font-medium text-foreground text-center">
               Click to upload or drag and drop
             </p>
-            <p className="text-xs text-muted-foreground">
-              PNG, JPG, WebP up to 5MB
+            <p className="text-xs text-muted-foreground text-center px-4">
+              Images (PNG, JPG, WebP) or Documents (PDF, DOC) up to 10MB
             </p>
             <Input
               type="file"
-              accept="image/*"
+              accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               onChange={handleFileChange}
               className="hidden"
             />
