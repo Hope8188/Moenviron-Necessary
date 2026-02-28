@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/contexts/AuthContext";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts, useProduct } from "@/hooks/useProducts";
 import {
   Leaf, ArrowLeft, Plus, Minus, ShoppingBag, MapPin, Recycle,
   Loader2, Heart, Truck, Ruler, Info, Star, ChevronDown, ChevronUp, Shield
@@ -51,37 +51,24 @@ interface Product {
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("M");
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
   const { user } = useAuth();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
-  const { data: allProducts = [] } = useProducts();
+
+  // Use React Query hooks instead of manual useEffect
+  const { data: allProducts = [], isLoading: allLoading } = useProducts();
+  const { data: product, isLoading: productLoading } = useProduct(id || "");
+  const isLoading = allLoading || productLoading;
 
   useEffect(() => {
-    async function fetchProduct() {
-      if (!id) return;
-
-      const { data, error } = await (supabase as any)
-        .from("products")
-        .select("*")
-        .eq("id", id)
-        .eq("is_active", true)
-        .maybeSingle();
-
-      if (!error && data) {
-        setProduct(data as Product);
-        trackProductInteraction(data.id, 'view', data.name);
-      }
-      setIsLoading(false);
-    }
-
-    fetchProduct();
     window.scrollTo(0, 0);
-  }, [id]);
+    if (product) {
+      trackProductInteraction(product.id, 'view', product.name);
+    }
+  }, [id, product]);
 
   const addToCart = () => {
     if (!product) return;
@@ -347,8 +334,8 @@ const ProductDetail = () => {
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={`h-10 w-10 md:h-11 md:w-11 rounded-full text-xs font-bold transition-all border-2 ${selectedSize === size
-                          ? "bg-black text-white border-black shadow-lg scale-110"
-                          : "border-zinc-200 text-zinc-600 hover:border-black hover:text-black"
+                        ? "bg-black text-white border-black shadow-lg scale-110"
+                        : "border-zinc-200 text-zinc-600 hover:border-black hover:text-black"
                         }`}
                     >
                       {size}
