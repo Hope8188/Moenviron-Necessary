@@ -79,14 +79,14 @@ export const NewsletterPopup = () => {
       if (!open) handleClose();
     }}>
       <DialogContent
-        className="max-w-[800px] p-0 overflow-hidden border-none bg-transparent"
+        className="max-w-[95vw] sm:max-w-[800px] p-0 overflow-hidden border-none bg-transparent"
         aria-labelledby="newsletter-title"
         aria-describedby="newsletter-description"
         aria-label="Newsletter Signup"
       >
-        <div className="flex flex-col md:flex-row h-full md:h-[500px] bg-white rounded-none">
-          {/* Image Section */}
-          <div className="w-full md:w-1/2 relative h-64 md:h-auto overflow-hidden">
+        <div className="flex flex-col md:flex-row h-full bg-white rounded-xl md:rounded-none overflow-hidden">
+          {/* Image Section — hidden on very small phones, shorter on medium */}
+          <div className="hidden sm:block w-full md:w-1/2 relative h-48 sm:h-56 md:h-[500px] overflow-hidden">
             <img
               src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=500&fit=crop&q=80&auto=format"
               alt="Artisan Craftsmanship"
@@ -95,27 +95,27 @@ export const NewsletterPopup = () => {
               className="absolute inset-0 w-full h-full object-cover grayscale-[0.2]"
             />
             <div className="absolute inset-0 bg-black/20" />
-            <div className="absolute bottom-8 left-8">
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/80">Vol. 01 Edition</span>
+            <div className="absolute bottom-4 left-4 md:bottom-8 md:left-8">
+              <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] text-white/80">Vol. 01 Edition</span>
             </div>
           </div>
 
           {/* Form Section */}
-          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-[#F9F7F2]">
-            <div className="space-y-6">
+          <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-12 flex flex-col justify-center relative bg-[#F9F7F2]">
+            <div className="space-y-4 md:space-y-6">
               <div>
                 <DialogTitle id="newsletter-title" className="sr-only">Join Our Newsletter</DialogTitle>
                 <DialogDescription id="newsletter-description" className="sr-only">
                   Sign up to receive updates on circular fashion collection drops and artisan stories.
                 </DialogDescription>
-                <h3 className="text-sm font-bold uppercase tracking-[0.3em] text-[#2D5A43] mb-4">Newsletter</h3>
-                <h2 className="text-4xl font-display leading-tight mb-4">Join Our <br />Circular World</h2>
-                <p className="text-muted-foreground font-light leading-relaxed">
+                <h3 className="text-[10px] sm:text-sm font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[#2D5A43] mb-3 md:mb-4">Newsletter</h3>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display leading-tight mb-3 md:mb-4">Join Our <br className="hidden sm:block" />Circular World</h2>
+                <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed">
                   Get exclusive access to collection drops, artisan stories, and circular economy insights.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                 <div className="relative group">
                   <Mail className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-black/20 group-focus-within:text-black transition-colors" />
                   <label htmlFor="popup-newsletter-email" className="sr-only">Your email address</label>
@@ -126,7 +126,7 @@ export const NewsletterPopup = () => {
                     placeholder="YOUR EMAIL ADDRESS"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-transparent border-0 border-b border-black/10 rounded-none pl-7 h-12 py-3 text-xs font-bold tracking-widest focus-visible:ring-0 focus-visible:border-black transition-all placeholder:text-black/20"
+                    className="bg-transparent border-0 border-b border-black/10 rounded-none pl-7 h-11 md:h-12 py-3 text-[10px] sm:text-xs font-bold tracking-widest focus-visible:ring-0 focus-visible:border-black transition-all placeholder:text-black/20"
                     required
                     autoComplete="email"
                   />
@@ -134,7 +134,7 @@ export const NewsletterPopup = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-14 bg-black text-white rounded-none font-bold uppercase tracking-widest text-[10px] hover:bg-black/90 transition-all group disabled:opacity-50"
+                  className="w-full h-12 md:h-14 bg-black text-white rounded-none font-bold uppercase tracking-widest text-[9px] md:text-[10px] hover:bg-black/90 transition-all group disabled:opacity-50"
                   aria-label="Join the movement and subscribe to newsletter"
                 >
                   {isLoading ? (
@@ -148,7 +148,7 @@ export const NewsletterPopup = () => {
                 </Button>
               </form>
 
-              <p className="text-[9px] text-muted-foreground uppercase tracking-widest">
+              <p className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-widest">
                 No spam. Only high-impact updates. Unsubscribe anytime.
               </p>
             </div>

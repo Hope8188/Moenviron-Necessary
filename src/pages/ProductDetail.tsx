@@ -14,6 +14,8 @@ import { SEO } from "@/components/SEO";
 import { formatPrice } from "@/lib/currency";
 import { SustainableJourney } from "@/components/shop/SustainableJourney";
 
+const availableSizes = ["XS", "S", "M", "L", "XL", "XXL"];
+
 interface Product {
   id: string;
   name: string;
@@ -32,6 +34,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("M");
   const { user } = useAuth();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
@@ -64,7 +67,7 @@ const ProductDetail = () => {
     const savedCart = localStorage.getItem("moenviron-cart");
     const cart = savedCart ? JSON.parse(savedCart) : [];
 
-    const existingIndex = cart.findIndex((item: { id: string }) => item.id === product.id);
+    const existingIndex = cart.findIndex((item: { id: string; size?: string }) => item.id === product.id && item.size === selectedSize);
 
     if (existingIndex >= 0) {
       cart[existingIndex].quantity += quantity;
@@ -75,6 +78,7 @@ const ProductDetail = () => {
         price: product.price,
         currency: product.currency,
         quantity,
+        size: selectedSize,
         image_url: product.image_url,
         carbon_offset_kg: product.carbon_offset_kg,
       });
@@ -82,7 +86,7 @@ const ProductDetail = () => {
 
     localStorage.setItem("moenviron-cart", JSON.stringify(cart));
     window.dispatchEvent(new CustomEvent("cart-updated"));
-    toast.success(`Added ${quantity} ${product.name} to cart`);
+    toast.success(`Added ${quantity} ${product.name} (${selectedSize}) to cart`);
   };
 
   const handleWishlistToggle = () => {
@@ -220,8 +224,30 @@ const ProductDetail = () => {
                 </div>
               </div>
 
+              {/* Size Selection */}
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-bold uppercase tracking-widest text-zinc-400">Size</span>
+                  <span className="text-xs text-zinc-400">Selected: <span className="font-bold text-black">{selectedSize}</span></span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {availableSizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`h-11 w-11 md:h-12 md:w-12 rounded-full text-xs md:text-sm font-bold transition-all border-2 ${selectedSize === size
+                          ? "bg-black text-white border-black shadow-lg scale-110"
+                          : "border-zinc-200 text-zinc-600 hover:border-black hover:text-black"
+                        }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Quantity and Add to Cart */}
-              <div className="mt-12 space-y-6">
+              <div className="mt-8 space-y-6">
                 <div className="flex items-center gap-6">
                   <span className="text-sm font-bold uppercase tracking-widest text-zinc-400">Quantity</span>
                   <div className="flex items-center gap-3">
@@ -249,9 +275,9 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="flex gap-4 pt-2">
-                  <Button size="lg" className="flex-1 h-16 rounded-full bg-black hover:bg-[#7CC38A] transition-all duration-300 gap-3 font-bold uppercase tracking-widest text-xs" onClick={addToCart}>
+                  <Button size="lg" className="flex-1 h-14 md:h-16 rounded-full bg-black hover:bg-[#7CC38A] transition-all duration-300 gap-3 font-bold uppercase tracking-widest text-[10px] md:text-xs" onClick={addToCart}>
                     <ShoppingBag className="h-5 w-5" />
-                    Add to Collection
+                    Add to Collection — {selectedSize}
                   </Button>
                   <Button
                     size="lg"

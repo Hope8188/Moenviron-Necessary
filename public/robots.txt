@@ -1,5 +1,13 @@
-Sitemap: https://moenviron.com/sitemap.xml
+# Main crawl rules
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-login
+Disallow: /auth
+Disallow: /checkout
+Disallow: /profile
 
+# AI Crawler permissions (enable AI discovery & indexing)
 User-agent: GPTBot
 Allow: /
 
@@ -21,8 +29,28 @@ Allow: /
 User-agent: OAI-SearchBot
 Allow: /
 
-# Disallow admin and auth pages
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Googlebot (search engine)
+User-agent: Googlebot
+Allow: /
 Disallow: /admin
 Disallow: /auth
-Disallow: /checkout
-Disallow: /profile
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /auth
+
+# Sitemap
+Sitemap: https://moenviron.com/sitemap.xml
