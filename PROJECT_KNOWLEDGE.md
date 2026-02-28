@@ -24,7 +24,8 @@ This document serves as a persistent record of the Moenviron project architectur
   | TZS | Standard 2-decimal | `false` | amount × 100 |
   | RWF | Truly zero-decimal | `true` | send raw amount |
   | NGN, ZAR, GHS, ETB | Standard 2-decimal | `false` | amount × 100 |
-- **Lesson**: Always check https://docs.stripe.com/currencies — the "zero-decimal" list has special cases.
+- **Lesson**: Always check https://docs.stripe.com/currencies — the "zero-decimal" list has special cases. 
+- **Stripe Base Minimums**: The `minAmount` in `CURRENCY_CONFIG` represents the absolute floor that Stripe can process (e.g. £0.30 for GBP, $0.50 for USD). Do not set this to a high number like 30, or it will clamp UI donation buttons incorrectly (e.g. £10 displaying as £30).
 
 ## 📊 Analytics & Geolocation
 - **Geolocation Provider**: `https://get.geojs.io/v1/ip/geo.json` (previous providers ipwho.is and ipapi.co caused CORS/CSP blocks).
@@ -59,8 +60,9 @@ This document serves as a persistent record of the Moenviron project architectur
 6. **Stripe iframe blocked**: Caused by `Cross-Origin-Embedder-Policy` header. Solution: don't set COEP at all.
 7. **Product page loading forever**: Caused by `trackProductInteraction()` using `.single()` which throws on missing RLS. Fixed by using `.maybeSingle()` and fire-and-forget pattern. Analytics must NEVER block UI rendering.
 8. **product_performance_stats table**: Needs public INSERT/UPDATE + public SELECT RLS. The `.gemini/fix_supabase_performance.sql` script handles this.
-9. **app_role enum**: The PostgreSQL enum may not have all values (moderator, content, etc.). Always use `role::text` casting in RLS policies to avoid "invalid input value for enum" errors. Or run the enum-adding DO block first.
+9. **app_role enum & user_roles recursion**: The PostgreSQL enum may not have all values (moderator, content, etc.). We use `role::text` casting in RLS policies to avoid "invalid input value for enum" errors. Additionally, checking if a user is an admin by querying the same `user_roles` table inside an RLS policy causes `infinite recursion detected`. Fix: Use `SECURITY DEFINER` functions like `is_admin()` and `is_staff()` that bypass RLS for role checks.
 10. **Newsletter popup timing**: Set to 15 seconds. At 3 seconds, users haven't engaged yet and feel interrupted. 15s = they've scrolled, read, and are more receptive.
+11. **Data Fetching API**: Replaced raw `useEffect` blocks fetching from Supabase with `@tanstack/react-query` (`useQuery`). This provides built-in caching, deduping, and minimizes unnecessary re-renders (e.g. in `Impact.tsx`).
 
 ## 🛒 Shop & Product Architecture
 - **Size selection**: Products support XS, S, M, L, XL, XXL. Size is stored in cart items.

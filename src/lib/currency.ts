@@ -10,9 +10,9 @@ export interface CurrencyConfig {
 }
 
 export const CURRENCY_CONFIG: Record<string, CurrencyConfig> = {
-  gbp: { symbol: "£", code: "GBP", rate: 1, minAmount: 30, zeroDecimal: false },
-  eur: { symbol: "€", code: "EUR", rate: 1.17, minAmount: 50, zeroDecimal: false },
-  usd: { symbol: "$", code: "USD", rate: 1.27, minAmount: 50, zeroDecimal: false },
+  gbp: { symbol: "£", code: "GBP", rate: 1, minAmount: 0.30, zeroDecimal: false },
+  eur: { symbol: "€", code: "EUR", rate: 1.17, minAmount: 0.50, zeroDecimal: false },
+  usd: { symbol: "$", code: "USD", rate: 1.27, minAmount: 0.50, zeroDecimal: false },
   kes: { symbol: "KSh ", code: "KES", rate: 165, minAmount: 100, zeroDecimal: false },
   ugx: { symbol: "UGX ", code: "UGX", rate: 4700, minAmount: 1000, zeroDecimal: false },
   tzs: { symbol: "TZS ", code: "TZS", rate: 3200, minAmount: 1000, zeroDecimal: false },

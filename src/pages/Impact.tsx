@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -32,27 +33,27 @@ interface ImpactMetric {
 }
 
 const metricConfig: Record<string, { icon: React.ElementType; label: string; color: string; description: string }> = {
-  tonnes_recycled: { 
-    icon: Recycle, 
-    label: "Textiles Recycled", 
+  tonnes_recycled: {
+    icon: Recycle,
+    label: "Textiles Recycled",
     color: "hsl(150 40% 35%)",
     description: "Amount of textile waste diverted from landfills and processed through our circular systems."
   },
-  carbon_offset: { 
-    icon: Cloud, 
-    label: "Carbon Prevented", 
+  carbon_offset: {
+    icon: Cloud,
+    label: "Carbon Prevented",
     color: "hsl(200 60% 45%)",
     description: "Greenhouse gas emissions avoided by replacing virgin materials with recycled textiles."
   },
-  water_saved: { 
-    icon: Droplets, 
-    label: "Water Saved", 
+  water_saved: {
+    icon: Droplets,
+    label: "Water Saved",
     color: "hsl(220 70% 55%)",
     description: "Total water volume conserved compared to traditional textile production methods."
   },
-  jobs_created: { 
-    icon: Users, 
-    label: "Jobs Created", 
+  jobs_created: {
+    icon: Users,
+    label: "Jobs Created",
     color: "hsl(25 45% 45%)",
     description: "Sustainable employment opportunities established within our Kenyan processing facility."
   },
@@ -86,39 +87,41 @@ const testMetricsData: ImpactMetric[] = [
 ];
 
 const Impact = () => {
-  const [metrics, setMetrics] = useState<ImpactMetric[]>(testMetricsData);
-  const [isLoading, setIsLoading] = useState(false);
+  // Removed unused metric state
   const [activeMetric, setActiveMetric] = useState("tonnes_recycled");
   const { data: cmsHeader, isLoading: cmsLoading } = useCMSContent("impact", "header");
 
-interface ImpactContent {
-  headline?: string;
-  subheadline?: string;
-}
+  interface ImpactContent {
+    headline?: string;
+    subheadline?: string;
+  }
 
-  useEffect(() => {
-    async function fetchMetrics() {
+  const { data: fetchMetricsData, isLoading: metricsLoading } = useQuery({
+    queryKey: ["impact-metrics"],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("impact_metrics")
         .select("id, metric_name, metric_value, unit, recorded_at, notes")
         .order("recorded_at", { ascending: true });
 
-      if (!error && data && data.length > 0) {
-        // Map database data to our interface
-        const mappedData: ImpactMetric[] = data.map(item => ({
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        return data.map(item => ({
           ...item,
           batch_id: null,
           traceability_link: null,
           facility_location: null,
           category: null,
-        }));
-        setMetrics(mappedData);
+        })) as ImpactMetric[];
       }
-      setIsLoading(false);
-    }
+      return testMetricsData;
+    },
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
-    fetchMetrics();
-  }, []);
+  const metrics = fetchMetricsData || testMetricsData;
+  const isLoading = cmsLoading || metricsLoading;
 
   const cmsContent = (cmsHeader?.content || {}) as ImpactContent;
   const content = {
@@ -140,17 +143,17 @@ interface ImpactContent {
 
 
 
-    return (
-      <div className="flex min-h-screen flex-col bg-background selection:bg-forest/20">
-          <SEO
-            title="Environmental Impact"
-            description="Track our verified environmental impact: tonnes of textiles recycled, carbon offset, water saved, and jobs created through our UK-Kenya circular fashion loop."
-            url="https://moenviron.com/impact"
-            keywords="fashion environmental impact, textile recycling statistics, carbon offset fashion, sustainable fashion impact, circular economy metrics"
-            breadcrumbs={[{ name: "Our Impact", url: "/impact" }]}
-          />
-        <Navbar />
-        <main className="flex-1">
+  return (
+    <div className="flex min-h-screen flex-col bg-background selection:bg-forest/20">
+      <SEO
+        title="Environmental Impact"
+        description="Track our verified environmental impact: tonnes of textiles recycled, carbon offset, water saved, and jobs created through our UK-Kenya circular fashion loop."
+        url="https://moenviron.com/impact"
+        keywords="fashion environmental impact, textile recycling statistics, carbon offset fashion, sustainable fashion impact, circular economy metrics"
+        breadcrumbs={[{ name: "Our Impact", url: "/impact" }]}
+      />
+      <Navbar />
+      <main className="flex-1">
         {/* Institutional Header */}
         <section className="pt-32 pb-16 md:pt-40 border-b border-black/5">
           <div className="container">
@@ -162,7 +165,7 @@ interface ImpactContent {
                     Archive / Environmental ROI / v2.1.0
                   </p>
                 </div>
-                <h1 
+                <h1
                   className="font-display text-5xl md:text-7xl font-medium tracking-tight text-foreground leading-[1.1]"
                   dangerouslySetInnerHTML={{ __html: content.headline }}
                 />
@@ -196,9 +199,8 @@ interface ImpactContent {
                   <button
                     key={metric.metric_name}
                     onClick={() => setActiveMetric(metric.metric_name)}
-                    className={`flex-1 py-12 px-8 min-w-[200px] text-left transition-all group relative ${
-                      isActive ? 'bg-forest/5' : 'hover:bg-black/[0.02]'
-                    }`}
+                    className={`flex-1 py-12 px-8 min-w-[200px] text-left transition-all group relative ${isActive ? 'bg-forest/5' : 'hover:bg-black/[0.02]'
+                      }`}
                   >
                     <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-3">
                       {config.label}
@@ -278,9 +280,9 @@ interface ImpactContent {
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
-                          <a 
-                            href={batch.traceability_link || '#'} 
-                            target="_blank" 
+                          <a
+                            href={batch.traceability_link || '#'}
+                            target="_blank"
                             className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground hover:text-forest transition-colors underline underline-offset-4"
                           >
                             Access Data
@@ -317,17 +319,16 @@ interface ImpactContent {
                   Longitudinal data analysis of our circular infrastructure. Metrics are tracked monthly to monitor growth in recovery efficiency and carbon mitigation.
                 </p>
               </div>
-              
+
               <div className="flex flex-wrap gap-2 md:justify-end">
                 {Object.entries(metricConfig).map(([key, config]) => (
                   <button
                     key={key}
                     onClick={() => setActiveMetric(key)}
-                    className={`px-6 py-2 text-[10px] font-mono uppercase tracking-widest border transition-all ${
-                      activeMetric === key 
-                        ? 'bg-black text-white border-black' 
-                        : 'bg-transparent text-muted-foreground border-black/10 hover:border-black/30'
-                    }`}
+                    className={`px-6 py-2 text-[10px] font-mono uppercase tracking-widest border transition-all ${activeMetric === key
+                      ? 'bg-black text-white border-black'
+                      : 'bg-transparent text-muted-foreground border-black/10 hover:border-black/30'
+                      }`}
                   >
                     {config.label}
                   </button>
@@ -349,11 +350,11 @@ interface ImpactContent {
                     fontFamily="monospace"
                     dy={20}
                   />
-                  <YAxis 
+                  <YAxis
                     axisLine={false}
                     tickLine={false}
-                    stroke="#999" 
-                    fontSize={10} 
+                    stroke="#999"
+                    fontSize={10}
                     fontFamily="monospace"
                     dx={-20}
                   />
@@ -375,117 +376,117 @@ interface ImpactContent {
                       return null;
                     }}
                   />
-                      <Area
-                        type="monotone"
-                        dataKey="metric_value"
-                        stroke="#1A3C34"
-                        strokeWidth={2}
-                        fill="#1A3C34"
-                        fillOpacity={0.05}
-                        animationDuration={2000}
-                        animationEasing="ease-in-out"
-                        animationBegin={0}
-                      />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+                  <Area
+                    type="monotone"
+                    dataKey="metric_value"
+                    stroke="#1A3C34"
+                    strokeWidth={2}
+                    fill="#1A3C34"
+                    fillOpacity={0.05}
+                    animationDuration={2000}
+                    animationEasing="ease-in-out"
+                    animationBegin={0}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Combined Impact Overview Graph */}
-          <section className="py-32 bg-[#FAFAFA] border-t border-black/5">
-            <div className="container">
-              <div className="mb-16">
-                <h2 className="text-sm font-mono uppercase tracking-[0.3em] text-forest font-bold mb-4">Cumulative Impact</h2>
-                <p className="text-4xl font-medium tracking-tight text-foreground">
-                  Environmental Progress Overview
-                </p>
-                <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                  A comprehensive view of all key impact metrics over time, demonstrating our growing contribution to sustainable textile management.
-                </p>
-              </div>
+        {/* Combined Impact Overview Graph */}
+        <section className="py-32 bg-[#FAFAFA] border-t border-black/5">
+          <div className="container">
+            <div className="mb-16">
+              <h2 className="text-sm font-mono uppercase tracking-[0.3em] text-forest font-bold mb-4">Cumulative Impact</h2>
+              <p className="text-4xl font-medium tracking-tight text-foreground">
+                Environmental Progress Overview
+              </p>
+              <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                A comprehensive view of all key impact metrics over time, demonstrating our growing contribution to sustainable textile management.
+              </p>
+            </div>
 
-              <div className="grid md:grid-cols-2 gap-8">
-                {Object.entries(metricConfig).map(([key, config]) => {
-                  const metricData = metrics.filter((m) => m.metric_name === key);
-                  const latestValue = metricData.length > 0 ? metricData[metricData.length - 1].metric_value : 0;
-                  const unit = metricData.length > 0 ? metricData[metricData.length - 1].unit : "";
-                  const Icon = config.icon;
-                  
-                  return (
-                    <Card key={key} className="border border-black/5 bg-white shadow-sm">
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-lg bg-forest/10">
-                              <Icon className="h-5 w-5 text-forest" />
-                            </div>
-                            <div>
-                              <CardTitle className="text-sm font-mono uppercase tracking-widest">{config.label}</CardTitle>
-                              <CardDescription className="text-xs mt-1">{config.description}</CardDescription>
-                            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              {Object.entries(metricConfig).map(([key, config]) => {
+                const metricData = metrics.filter((m) => m.metric_name === key);
+                const latestValue = metricData.length > 0 ? metricData[metricData.length - 1].metric_value : 0;
+                const unit = metricData.length > 0 ? metricData[metricData.length - 1].unit : "";
+                const Icon = config.icon;
+
+                return (
+                  <Card key={key} className="border border-black/5 bg-white shadow-sm">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-lg bg-forest/10">
+                            <Icon className="h-5 w-5 text-forest" />
                           </div>
-                          <div className="text-right">
-                            <p className="text-2xl font-mono font-bold text-forest">{Number(latestValue).toLocaleString()}</p>
-                            <p className="text-[10px] font-mono text-muted-foreground uppercase">{unit}</p>
+                          <div>
+                            <CardTitle className="text-sm font-mono uppercase tracking-widest">{config.label}</CardTitle>
+                            <CardDescription className="text-xs mt-1">{config.description}</CardDescription>
                           </div>
                         </div>
-                      </CardHeader>
-                      <CardContent className="pt-4">
-                        <div className="h-[150px] w-full">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={metricData}>
-                              <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(0,0,0,0.05)" />
-                              <XAxis
-                                dataKey="recorded_at"
-                                axisLine={false}
-                                tickLine={false}
-                                tickFormatter={(value) => new Date(value).toLocaleDateString("en-GB", { month: "short" })}
-                                stroke="#999"
-                                fontSize={9}
-                                fontFamily="monospace"
-                              />
-                              <YAxis hide />
-                              <Tooltip
-                                content={({ active, payload, label }) => {
-                                  if (active && payload && payload.length) {
-                                    return (
-                                      <div className="border border-black bg-white p-3 shadow-lg text-xs">
-                                        <p className="font-mono text-muted-foreground mb-1">
-                                          {new Date(label).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
-                                        </p>
-                                        <p className="font-mono font-bold">
-                                          {Number(payload[0].value).toLocaleString()} {payload[0].payload.unit}
-                                        </p>
-                                      </div>
-                                    );
-                                  }
-                                  return null;
-                                }}
-                              />
-                              <Area
-                                type="monotone"
-                                dataKey="metric_value"
-                                stroke={config.color}
-                                strokeWidth={2}
-                                fill={config.color}
-                                fillOpacity={0.1}
-                                animationDuration={1500}
-                              />
-                            </AreaChart>
-                          </ResponsiveContainer>
+                        <div className="text-right">
+                          <p className="text-2xl font-mono font-bold text-forest">{Number(latestValue).toLocaleString()}</p>
+                          <p className="text-[10px] font-mono text-muted-foreground uppercase">{unit}</p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                      <div className="h-[150px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={metricData}>
+                            <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(0,0,0,0.05)" />
+                            <XAxis
+                              dataKey="recorded_at"
+                              axisLine={false}
+                              tickLine={false}
+                              tickFormatter={(value) => new Date(value).toLocaleDateString("en-GB", { month: "short" })}
+                              stroke="#999"
+                              fontSize={9}
+                              fontFamily="monospace"
+                            />
+                            <YAxis hide />
+                            <Tooltip
+                              content={({ active, payload, label }) => {
+                                if (active && payload && payload.length) {
+                                  return (
+                                    <div className="border border-black bg-white p-3 shadow-lg text-xs">
+                                      <p className="font-mono text-muted-foreground mb-1">
+                                        {new Date(label).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
+                                      </p>
+                                      <p className="font-mono font-bold">
+                                        {Number(payload[0].value).toLocaleString()} {payload[0].payload.unit}
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              }}
+                            />
+                            <Area
+                              type="monotone"
+                              dataKey="metric_value"
+                              stroke={config.color}
+                              strokeWidth={2}
+                              fill={config.color}
+                              fillOpacity={0.1}
+                              animationDuration={1500}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
-          </section>
-        </main>
-        <Footer />
-      </div>
-    );
-  };
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
-  export default Impact;
+export default Impact;
