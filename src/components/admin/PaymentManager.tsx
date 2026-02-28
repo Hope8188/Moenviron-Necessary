@@ -264,13 +264,15 @@ export function PaymentManager() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="name">Configuration Name</Label>
+                <Label htmlFor="config-name">Configuration Name</Label>
                 <Input
-                  id="name"
+                  id="config-name"
+                  name="config-name"
                   placeholder="e.g., Main Store, UK Market"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  autoComplete="off"
                 />
               </div>
 
@@ -291,9 +293,11 @@ export function PaymentManager() {
                     <Label htmlFor="publishable_key">Publishable Key</Label>
                     <Input
                       id="publishable_key"
+                      name="publishable_key"
                       placeholder="pk_test_..."
                       value={formData.stripe_publishable_key}
                       onChange={(e) => setFormData({ ...formData, stripe_publishable_key: e.target.value })}
+                      autoComplete="off"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
                       Found in your Stripe Dashboard → Developers → API keys
@@ -500,17 +504,20 @@ export function PaymentManager() {
           </p>
 
           <div className="space-y-2">
-            <Label>Webhook Endpoint URL</Label>
+            <Label htmlFor="webhook-url">Webhook Endpoint URL</Label>
             <div className="flex gap-2">
               <Input
+                id="webhook-url"
+                name="webhook-url"
                 readOnly
-                value={`${window.location.origin}/api/stripe-webhook`}
+                value="https://wmeijbrqjuhvnksiijcz.supabase.co/functions/v1/stripe-webhook"
                 className="font-mono text-sm"
+                autoComplete="off"
               />
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => copyToClipboard(`${window.location.origin}/api/stripe-webhook`)}
+                onClick={() => copyToClipboard('https://wmeijbrqjuhvnksiijcz.supabase.co/functions/v1/stripe-webhook')}
               >
                 <Copy className="h-4 w-4" />
               </Button>
@@ -532,7 +539,7 @@ export function PaymentManager() {
             <Shield className="h-4 w-4" />
             <AlertTitle>Webhook Secret</AlertTitle>
             <AlertDescription>
-              After creating the webhook in Stripe, add the signing secret to your Netlify environment variables as <code className="bg-muted px-1 rounded">STRIPE_WEBHOOK_SECRET</code>
+              After creating the webhook in Stripe, add the signing secret to Supabase Secrets as <code className="bg-muted px-1 rounded">STRIPE_WEBHOOK_SECRET</code> using: <code className="bg-muted px-1 rounded text-xs">npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_... --project-ref wmeijbrqjuhvnksiijcz</code>
             </AlertDescription>
           </Alert>
         </CardContent>

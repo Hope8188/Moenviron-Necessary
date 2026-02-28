@@ -195,12 +195,16 @@ export function Footer() {
                 Get updates on sustainable fashion and exclusive offers.
               </p>
               <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                <label htmlFor="footer-newsletter-email" className="sr-only">Email for newsletter</label>
                 <input
+                  id="footer-newsletter-email"
+                  name="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
                   required
+                  autoComplete="email"
                   className="flex-1 px-3 py-2 text-sm bg-background border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 <button

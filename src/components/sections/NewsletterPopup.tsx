@@ -118,13 +118,17 @@ export const NewsletterPopup = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative group">
                   <Mail className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-black/20 group-focus-within:text-black transition-colors" />
+                  <label htmlFor="popup-newsletter-email" className="sr-only">Your email address</label>
                   <Input
+                    id="popup-newsletter-email"
+                    name="email"
                     type="email"
                     placeholder="YOUR EMAIL ADDRESS"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="bg-transparent border-0 border-b border-black/10 rounded-none pl-7 h-12 py-3 text-xs font-bold tracking-widest focus-visible:ring-0 focus-visible:border-black transition-all placeholder:text-black/20"
                     required
+                    autoComplete="email"
                   />
                 </div>
                 <Button
