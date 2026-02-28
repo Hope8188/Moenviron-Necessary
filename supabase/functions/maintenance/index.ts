@@ -38,9 +38,9 @@ serve(async (req) => {
                 .maybeSingle()
 
             if (fetchError || !inviteData?.content) {
-                return new Response(JSON.stringify({ error: 'No invitations found' }), {
+                return new Response(JSON.stringify({ message: 'No invitations found', found: false }), {
                     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                    status: 404
+                    status: 200
                 })
             }
 
@@ -60,9 +60,9 @@ serve(async (req) => {
             const inviteIdx = invitations.findIndex((i: any) => i.email.toLowerCase() === email.toLowerCase())
 
             if (inviteIdx === -1) {
-                return new Response(JSON.stringify({ error: 'No pending invitation for this email' }), {
+                return new Response(JSON.stringify({ message: 'No pending invitation for this email', found: false }), {
                     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                    status: 404
+                    status: 200
                 })
             }
 
