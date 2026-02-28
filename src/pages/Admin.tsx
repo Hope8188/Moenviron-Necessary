@@ -523,12 +523,21 @@ const Admin = () => {
                           </div>
                         </div>
                         <div>
-                          <Label htmlFor="image">Image URL</Label>
-                          <Input
-                            id="image"
-                            value={formData.image_url}
-                            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                          />
+                          <Label htmlFor="image">Product Image</Label>
+                          <div className="space-y-4 pt-1">
+                            <ImageUploader
+                              currentUrl={formData.image_url}
+                              onUpload={(url) => setFormData({ ...formData, image_url: url })}
+                              label=""
+                            />
+                            <div className="text-xs text-center text-muted-foreground uppercase tracking-wider font-semibold">— OR —</div>
+                            <Input
+                              id="image"
+                              placeholder="Paste external image URL..."
+                              value={formData.image_url}
+                              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                            />
+                          </div>
                         </div>
                         <Button type="submit" className="w-full">
                           {editingProduct ? "Update Product" : "Create Product"}

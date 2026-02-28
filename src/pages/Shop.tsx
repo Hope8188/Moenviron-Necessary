@@ -364,7 +364,7 @@ const Shop = () => {
                       className="block"
                       onClick={() => handleProductClick(product)}
                     >
-                      <div className="relative aspect-[3/4] overflow-hidden rounded-xl md:rounded-2xl bg-zinc-50 border border-zinc-100 shadow-sm group-hover:shadow-xl transition-all duration-500">
+                      <div className="relative aspect-[3/4] overflow-hidden rounded-xl md:rounded-2xl bg-[#F9F7F2] border border-black/5 shadow-sm group-hover:shadow-xl transition-all duration-700">
                         {product.image_url ? (
                           <img
                             src={product.image_url}
@@ -375,12 +375,20 @@ const Shop = () => {
                             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop";
+                              target.style.opacity = '0';
+                              target.parentElement?.classList.add('flex', 'flex-col', 'items-center', 'justify-center');
+                              const fallbackText = document.createElement('span');
+                              fallbackText.className = 'absolute inset-0 flex flex-col items-center justify-center text-[10px] uppercase tracking-widest font-medium text-zinc-400';
+                              fallbackText.innerHTML = '<svg class="h-6 w-6 mb-2 text-zinc-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Image Unavailable';
+                              if (!target.parentElement?.querySelector('span')) {
+                                target.parentElement?.appendChild(fallbackText);
+                              }
                             }}
                           />
                         ) : (
-                          <div className="flex h-full items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100">
-                            <Leaf className="h-10 w-10 text-zinc-200" />
+                          <div className="flex h-full flex-col items-center justify-center text-zinc-300">
+                            <Leaf className="h-8 w-8 mb-2" />
+                            <span className="text-[10px] uppercase tracking-widest font-medium">Coming Soon</span>
                           </div>
                         )}
 

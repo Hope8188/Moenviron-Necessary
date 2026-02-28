@@ -186,7 +186,7 @@ const ProductDetail = () => {
 
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
             {/* Product Image */}
-            <div className="relative aspect-[3/4] md:aspect-square overflow-hidden rounded-2xl md:rounded-[2rem] bg-zinc-50 border border-zinc-100 shadow-sm">
+            <div className="relative aspect-[3/4] md:aspect-square overflow-hidden rounded-2xl md:rounded-[2rem] bg-[#F9F7F2] border border-black/5 shadow-sm">
               {product.image_url ? (
                 <img
                   src={product.image_url}
@@ -194,12 +194,20 @@ const ProductDetail = () => {
                   className="h-full w-full object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop";
+                    target.style.opacity = '0';
+                    target.parentElement?.classList.add('flex', 'flex-col', 'items-center', 'justify-center');
+                    const fallbackText = document.createElement('span');
+                    fallbackText.className = 'absolute inset-0 flex flex-col items-center justify-center text-xs uppercase tracking-widest font-medium text-zinc-400';
+                    fallbackText.innerHTML = '<svg class="h-8 w-8 mb-3 text-zinc-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Image Unavailable';
+                    if (!target.parentElement?.querySelector('span')) {
+                      target.parentElement?.appendChild(fallbackText);
+                    }
                   }}
                 />
               ) : (
-                <div className="flex h-full items-center justify-center">
-                  <Leaf className="h-24 w-24 text-zinc-100" />
+                <div className="flex h-full flex-col items-center justify-center text-zinc-300">
+                  <Leaf className="h-12 w-12 mb-3" />
+                  <span className="text-xs uppercase tracking-widest font-medium">Coming Soon</span>
                 </div>
               )}
               <Badge className="absolute left-4 top-4 md:left-6 md:top-6 bg-white/80 backdrop-blur-md text-black border-none hover:bg-white">{product.category}</Badge>
