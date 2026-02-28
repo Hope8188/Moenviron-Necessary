@@ -38,9 +38,38 @@ This document serves as a persistent record of the Moenviron project architectur
   - `SELECT` policy for `authenticated` role (admins read analytics data).
   - **Previous bug**: Only INSERT policy existed — admin dashboard returned 0 rows.
 
-## ✉️ Transactional Emails
-- **Service**: Resend.
-- **Logic**: Handled within `stripe-webhook` edge function.
+## ✉️ Transactional Emails (Resend)
+- **Service**: Resend (`RESEND_API_KEY` in Supabase Secrets).
+- **Edge Functions using Resend**:
+  - `send-invite-email` — Admin invitation emails
+  - `send-order-status-update` — Order/shipping status updates
+  - `test-resend` — Admin dashboard connection test
+  - `stripe-webhook` — Post-payment confirmation (inside handler)
+- **From address**: Uses `RESEND_FROM_EMAIL` env or defaults to `onboarding@resend.dev`.
+
+## 📧 MailerLite Newsletter Integration
+- **Edge Function**: `sync-to-mailerlite` — Syncs subscribers from `subscribers` table to MailerLite groups.
+- **Secret**: `MAILERLITE_API_KEY` in Supabase Secrets (must be set manually via admin dashboard or CLI).
+- **Admin UI**: `MailerLiteIntegration.tsx` component in the admin Subscribers tab — stores connection settings in `site_content` (section_key `mailerlite`).
+- **Actions**: `test` (ping API), `sync` (push subscribers to group), both called via `supabase.functions.invoke("sync-to-mailerlite", ...)`.
+
+## 🚀 Deployed Edge Functions
+| Function | JWT | Purpose |
+|----------|-----|---------|
+| `create-checkout` | OFF | Stripe Checkout session creation |
+| `stripe-webhook` | OFF | Stripe event handler → inserts orders |
+| `maintenance` | OFF | Admin SQL, role grants, invitation checks |
+| `send-invite-email` | OFF | Resend-powered staff invitation emails |
+| `test-resend` | OFF | Admin dashboard Resend connection test |
+| `sync-to-mailerlite` | OFF | Admin dashboard MailerLite subscriber sync |
+| `send-order-status-update` | OFF | Order status email notifications |
+
+## 👥 Admin Role System
+- **Enum values**: `admin`, `moderator`, `marketing`, `shipping`, `support`, `content`, `user`
+- **Table**: `user_roles` (columns: `id`, `user_id`, `role`, `responsibilities`, `created_at`)
+- **Helper functions**: `is_admin(_user_id)`, `is_admin()` (no-arg version uses `auth.uid()`), `is_staff()`, `has_role(user_id, role)`
+- **Invitations**: Stored as JSON array in `site_content` (section_key `pending_invitations`)
+- **Bug history**: The `app_role` enum originally only had `admin`, `moderator`, `user`. Missing values (`marketing`, `shipping`, `support`, `content`) were added via `fix_schema` action in the maintenance function.
 
 ## 🔐 Security Headers (IMPORTANT)
 - **COOP**: Must be `same-origin-allow-popups` — Stripe uses popups for 3D Secure verification. Using `same-origin` breaks Stripe.
