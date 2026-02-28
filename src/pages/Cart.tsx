@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Trash2, Plus, Minus, ShoppingBag, Leaf, ArrowRight, Loader2 } from "lucide-react";
 import stripeLogo from "@/assets/stripe-logo.webp";
 import { formatPrice } from "@/lib/currency";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CartItem {
   id: string;
