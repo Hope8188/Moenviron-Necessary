@@ -201,8 +201,8 @@ const Shop = () => {
                     key={category}
                     onClick={() => setSelectedCategory(category)}
                     className={`text-[10px] md:text-[11px] font-bold uppercase tracking-[0.12em] md:tracking-[0.18em] transition-all whitespace-nowrap px-2 py-1.5 rounded-full ${selectedCategory === category
-                        ? "bg-black text-white"
-                        : "text-zinc-400 hover:text-black hover:bg-zinc-100"
+                      ? "bg-black text-white"
+                      : "text-zinc-400 hover:text-black hover:bg-zinc-100"
                       }`}
                   >
                     {category}
@@ -230,8 +230,8 @@ const Shop = () => {
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-3 py-2 rounded-full border transition-all ${showFilters || activeFiltersCount > 0
-                      ? "bg-black text-white border-black"
-                      : "border-zinc-200 text-zinc-500 hover:border-zinc-400"
+                    ? "bg-black text-white border-black"
+                    : "border-zinc-200 text-zinc-500 hover:border-zinc-400"
                     }`}
                 >
                   <Filter className="h-3.5 w-3.5" />
@@ -280,8 +280,8 @@ const Shop = () => {
                           key={size}
                           onClick={() => setSelectedSize(selectedSize === size ? null : size)}
                           className={`h-8 w-8 md:h-9 md:w-9 rounded-full text-[10px] md:text-[11px] font-bold transition-all border ${selectedSize === size
-                              ? "bg-black text-white border-black"
-                              : "border-zinc-200 text-zinc-500 hover:border-black hover:text-black"
+                            ? "bg-black text-white border-black"
+                            : "border-zinc-200 text-zinc-500 hover:border-black hover:text-black"
                             }`}
                         >
                           {size}
@@ -440,13 +440,9 @@ const Shop = () => {
                         {formatPrice(product.price, product.currency || 'GBP')}
                       </p>
 
-                      {/* Size indicators */}
-                      <div className="flex gap-1 pt-0.5">
-                        {sizes.slice(0, 5).map((size) => (
-                          <span key={size} className="text-[8px] md:text-[9px] text-zinc-300 font-medium">
-                            {size}
-                          </span>
-                        ))}
+                      <div className="flex items-center gap-1.5 pt-0.5">
+                        <Truck className="h-3 w-3 text-[#7CC38A]" />
+                        <span className="text-[8px] md:text-[9px] text-[#2D5A43] font-bold uppercase tracking-wider">Free UK Delivery</span>
                       </div>
                     </div>
 
@@ -485,8 +481,8 @@ const Shop = () => {
                                     key={size}
                                     onClick={() => setQuickViewSize(size)}
                                     className={`py-2 text-[10px] md:text-xs font-bold rounded-lg border transition-all ${quickViewSize === size
-                                        ? "bg-black text-white border-black"
-                                        : "border-zinc-200 text-zinc-600 hover:border-black"
+                                      ? "bg-black text-white border-black"
+                                      : "border-zinc-200 text-zinc-600 hover:border-black"
                                       }`}
                                   >
                                     {size}

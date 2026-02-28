@@ -1,28 +1,18 @@
--- COMPREHENSIVE SUPABASE FIX (v2 — handles enum safely)  
+-- COMPREHENSIVE SUPABASE FIX (v3 — fixed enum handling)
 -- Run in SQL Editor: https://supabase.com/dashboard/project/wmeijbrqjuhvnksiijcz/sql
+--
+-- NOTE: The enum ADD VALUE statements below run outside any transaction.
+-- All RLS policies use role::text casting, so they work even if some
+-- enum values don't exist yet. If any ADD VALUE line fails because the
+-- value already exists, just skip it and continue.
+-- ============================================================
 
--- ============================================================
--- 0. ENSURE enum has all needed values (add if missing)
--- ============================================================
-DO $$
-BEGIN
-  -- Add missing enum values if they don't exist
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'moderator' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'app_role')) THEN
-    ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'moderator';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'marketing' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'app_role')) THEN
-    ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'marketing';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'shipping' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'app_role')) THEN
-    ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'shipping';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'support' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'app_role')) THEN
-    ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'support';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'content' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'app_role')) THEN
-    ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'content';
-  END IF;
-END $$;
+-- 0. Add missing enum values (run these one at a time if any fail)
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'moderator';
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'marketing';
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'shipping';
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'support';
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'content';
 
 -- ============================================================
 -- 1. page_views: Clean up all policies, create optimized ones
