@@ -13,7 +13,7 @@ export const CURRENCY_CONFIG: Record<string, CurrencyConfig> = {
   gbp: { symbol: "£", code: "GBP", rate: 1, minAmount: 30, zeroDecimal: false },
   eur: { symbol: "€", code: "EUR", rate: 1.17, minAmount: 50, zeroDecimal: false },
   usd: { symbol: "$", code: "USD", rate: 1.27, minAmount: 50, zeroDecimal: false },
-  kes: { symbol: "KSh ", code: "KES", rate: 165, minAmount: 100, zeroDecimal: true },
+  kes: { symbol: "KSh ", code: "KES", rate: 165, minAmount: 100, zeroDecimal: false },
   ugx: { symbol: "UGX ", code: "UGX", rate: 4700, minAmount: 1000, zeroDecimal: true },
   tzs: { symbol: "TZS ", code: "TZS", rate: 3200, minAmount: 1000, zeroDecimal: true },
   rwf: { symbol: "RWF ", code: "RWF", rate: 1350, minAmount: 100, zeroDecimal: true },

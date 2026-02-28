@@ -123,19 +123,19 @@ const Donate = () => {
       });
 
       if (invokeError) {
-        console.warn("Checkout session creation failed:", invokeError);
-        redirectToStripeFallback(email, selectedAmount, currencyKey);
+        console.error("Checkout session creation failed:", invokeError);
+        toast.error("Donation gateway currently unavailable. Please check your internet or try again later.");
         return;
       }
 
       if (data?.url) {
         window.location.href = data.url;
       } else {
-        redirectToStripeFallback(email, selectedAmount, currencyKey);
+        toast.error("Unexpected response from payment provider.");
       }
     } catch (err) {
       console.error("Donation redirect error:", err);
-      redirectToStripeFallback(email, selectedAmount, currencyKey);
+      toast.error("An error occurred during donation processing.");
     } finally {
       setIsLoading(false);
     }
@@ -237,31 +237,37 @@ const Donate = () => {
                 <Label htmlFor="donor-name">Full Name *</Label>
                 <Input
                   id="donor-name"
+                  name="donor-name"
                   value={donorName}
                   onChange={(e) => setDonorName(e.target.value)}
                   placeholder="Your full name"
                   required
+                  autoComplete="name"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="donor-email">Email Address *</Label>
                 <Input
                   id="donor-email"
+                  name="donor-email"
                   type="email"
                   value={donorEmail}
                   onChange={(e) => setDonorEmail(e.target.value)}
                   placeholder="your@email.com"
                   required
+                  autoComplete="email"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="donor-phone">Phone Number</Label>
                 <Input
                   id="donor-phone"
+                  name="donor-phone"
                   type="tel"
                   value={donorPhone}
                   onChange={(e) => setDonorPhone(e.target.value)}
                   placeholder="Your phone number"
+                  autoComplete="tel"
                 />
               </div>
             </div>
@@ -295,19 +301,23 @@ const Donate = () => {
                 <Label htmlFor="donor-address">Collection Address *</Label>
                 <Input
                   id="donor-address"
+                  name="donor-address"
                   value={donorAddress}
                   onChange={(e) => setDonorAddress(e.target.value)}
                   placeholder="Your full address"
                   required
+                  autoComplete="street-address"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="clothes-notes">Additional Notes</Label>
                 <Input
                   id="clothes-notes"
+                  name="clothes-notes"
                   value={clothesNotes}
                   onChange={(e) => setClothesNotes(e.target.value)}
                   placeholder="E.g., preferred collection times, number of bags..."
+                  autoComplete="off"
                 />
               </div>
             </div>
@@ -474,14 +484,18 @@ const Donate = () => {
                       ))}
                     </div>
                     <div className="relative">
+                      <Label htmlFor="custom-amount" className="sr-only">Custom Amount</Label>
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">{currencySymbol}</span>
                       <Input
+                        id="custom-amount"
+                        name="amount"
                         type="number"
                         placeholder="Custom amount"
                         value={customAmount}
                         onChange={(e) => setCustomAmount(e.target.value)}
                         className="pl-10"
                         min={currencyConfig.minAmount}
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -493,7 +507,7 @@ const Donate = () => {
                       Country * <span className="text-xs text-muted-foreground ml-2">(determines currency)</span>
                     </Label>
                     <Select value={country} onValueChange={setCountry}>
-                      <SelectTrigger>
+                      <SelectTrigger id="country" name="country">
                         <SelectValue placeholder="Where are you donating from?" />
                       </SelectTrigger>
                       <SelectContent>
@@ -518,29 +532,35 @@ const Donate = () => {
                       <Label htmlFor="email">Email *</Label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="your@email.com"
                         required
+                        autoComplete="email"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="name">Name (optional)</Label>
                       <Input
                         id="name"
+                        name="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Your name"
+                        autoComplete="name"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="city">City (optional)</Label>
                       <Input
                         id="city"
+                        name="city"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="Your city"
+                        autoComplete="address-level2"
                       />
                     </div>
                   </div>
