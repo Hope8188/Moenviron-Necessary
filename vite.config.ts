@@ -77,7 +77,9 @@ export default defineConfig(({ mode }) => ({
   build: {
     minify: 'esbuild',
     cssMinify: true,
+    cssCodeSplit: true,
     target: 'es2020',
+    sourcemap: true,
     rollupOptions: {
       output: {
         chunkFileNames: 'assets/[name]-[hash].js',

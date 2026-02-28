@@ -13,11 +13,11 @@ const DEFAULT_SLIDES = [
     alt: "Mountain landscape with forests and river valley"
   },
   {
-    url: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1920&q=80",
+    url: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1200&h=675&fit=crop&auto=format&q=75",
     alt: "Sustainable fashion production"
   },
   {
-    url: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=1920&q=80",
+    url: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=1200&h=675&fit=crop&auto=format&q=75",
     alt: "Textile recycling process"
   }
 ];
@@ -213,44 +213,4 @@ export function HeroSection() {
   );
 }
 
-// The following DialogContent is assumed to be part of a separate NewsletterPopup component
-// or a similar dialog structure elsewhere in the application, as it cannot be directly
-// inserted into the HeroSection component in a syntactically correct manner.
-// It is included here as a separate block to fulfill the instruction regarding DialogTitle/Description.
-/*
-<DialogContent className="max-w-[800px] p-0 overflow-hidden border-none bg-transparent">
-  <div className="flex flex-col md:flex-row h-full md:h-[500px] bg-white rounded-none">
-    <div className="w-full md:w-1/2 relative h-64 md:h-auto overflow-hidden">
-      <img
-        src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=1200&auto=format&fit=crop"
-        alt="Artisan Craftsmanship"
-        width="400"
-        height="500"
-        className="absolute inset-0 w-full h-full object-cover grayscale-[0.2]"
-      />
-      <div className="absolute inset-0 bg-black/20" />
-      <div className="absolute bottom-8 left-8">
-        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/80">Vol. 01 Edition</span>
-      </div>
-    </div>
 
-    <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-[#F9F7F2]">
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-sm font-bold uppercase tracking-[0.3em] text-[#2D5A43] mb-4">Newsletter</h3>
-          <h2 className="text-4xl font-display leading-tight mb-4" id="newsletter-title">Join Our <br />Circular World</h2>
-          <p className="text-muted-foreground font-light leading-relaxed" id="newsletter-description">
-            Get exclusive access to collection drops, artisan stories, and circular economy insights.
-          </p>
-          <div className="sr-only">
-            <DialogTitle>Newsletter Signup</DialogTitle>
-            <DialogDescription>
-              Sign up for the Moenviron newsletter to get updates on sustainable fashion.
-            </DialogDescription>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</DialogContent>
-*/
