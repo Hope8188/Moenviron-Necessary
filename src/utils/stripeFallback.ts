@@ -21,6 +21,11 @@ export const getStripeFallbackUrl = (email?: string, amount?: number, currency: 
         params.append('email', email);
     }
 
+    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+    if (anonKey) {
+        params.append('apikey', anonKey);
+    }
+
     params.append('isDonation', 'true');
 
     return `${STRIPE_DYNAMIC_CHECKOUT_URL}?${params.toString()}`;
