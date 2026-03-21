@@ -52,22 +52,34 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.href
-                ? "text-primary"
-                : "text-muted-foreground"
-                }`}
+              className={`relative text-sm font-medium transition-all duration-200 hover:text-primary ${
+                location.pathname === link.href
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              }`}
             >
               {link.label}
+              {location.pathname === link.href && (
+                <span className="absolute -bottom-1 left-0 h-0.5 w-full rounded-full bg-primary" />
+              )}
             </Link>
           ))}
           {isAdmin && (
-            <Link to="/admin" className="text-sm font-medium text-primary hover:text-primary/80">
+            <Link
+              to="/admin"
+              className={`relative text-sm font-medium transition-all duration-200 hover:text-primary ${
+                location.pathname === "/admin" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
               Admin
+              {location.pathname === "/admin" && (
+                <span className="absolute -bottom-1 left-0 h-0.5 w-full rounded-full bg-primary" />
+              )}
             </Link>
           )}
         </div>
@@ -131,10 +143,11 @@ export function Navbar() {
                 key={link.href}
                 to={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`py-3 text-base font-medium transition-colors hover:text-primary ${location.pathname === link.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
-                  }`}
+                className={`rounded-lg px-4 py-3 text-base font-medium transition-all duration-200 ${
+                  location.pathname === link.href
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
               >
                 {link.label}
               </Link>
