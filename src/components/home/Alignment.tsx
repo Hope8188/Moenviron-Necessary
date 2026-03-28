@@ -103,8 +103,8 @@ export default function Alignment() {
   }, { scope: ref });
 
   return (
-    <section className="py-16 md:py-20 lg:py-24 bg-white text-center">
-      <div ref={ref} className="max-w-[56rem] mx-auto px-4 md:px-8">
+    <section id="alignment" ref={ref} className="py-16 md:py-20 lg:py-24 bg-white text-center">
+      <div className="max-w-[56rem] mx-auto px-4 md:px-8">
         <div className="align-header">
           {/* Badge */}
           <div className="align-badge w-16 h-16 md:w-20 md:h-20 bg-light-green text-forest rounded-full flex items-center justify-center mx-auto mb-8 cursor-default">
@@ -122,25 +122,36 @@ export default function Alignment() {
           </p>
         </div>
 
-        {/* Marquee Tags with blur overlays */}
+        {/* Marquee Tags */}
         <div className="align-marquee marquee-container relative my-6 md:my-8 overflow-hidden">
-          {/* Left Blur Overlay */}
-          <div className="absolute left-0 top-0 bottom-0 w-12 md:w-16 bg-gradient-to-r from-white via-white/40 to-transparent z-10 pointer-events-none" />
-          
-          {/* Marquee Content */}
-          <div className="inline-flex gap-6 animate-marquee pr-6 hover:[animation-play-state:paused]">
-            {[...tags, ...tags].map((tag, i) => (
-              <span
-                key={i}
-                className="bg-[rgba(226,239,231,0.5)] border border-mint px-4 md:px-5 py-2 rounded-full text-[0.8125rem] md:text-sm text-forest font-medium backdrop-blur-[4px] hover:bg-light-green hover:border-forest hover:-translate-y-0.5 transition-all duration-400 whitespace-nowrap"
-              >
-                {tag}
-              </span>
-            ))}
+          {/* Left blur gradient overlay */}
+          <div className="absolute left-0 top-0 bottom-0 w-14 md:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+
+          <div className="flex w-fit animate-marquee hover:[animation-play-state:paused] whitespace-nowrap">
+            <div className="flex items-center gap-6 px-3">
+              {tags.map((tag, i) => (
+                <span
+                  key={`first-${i}`}
+                  className="bg-sand/50 border border-mint px-4 md:px-6 py-2.5 rounded-full text-[0.8125rem] md:text-sm text-forest font-semibold backdrop-blur-sm hover:bg-light-green hover:border-forest hover:-translate-y-1 transition-all duration-400"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className="flex items-center gap-6 px-3">
+              {tags.map((tag, i) => (
+                <span
+                  key={`second-${i}`}
+                  className="bg-sand/50 border border-mint px-4 md:px-6 py-2.5 rounded-full text-[0.8125rem] md:text-sm text-forest font-semibold backdrop-blur-sm hover:bg-light-green hover:border-forest hover:-translate-y-1 transition-all duration-400"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
-          
-          {/* Right Blur Overlay */}
-          <div className="absolute right-0 top-0 bottom-0 w-12 md:w-16 bg-gradient-to-l from-white via-white/40 to-transparent z-10 pointer-events-none" />
+
+          {/* Right blur gradient overlay */}
+          <div className="absolute right-0 top-0 bottom-0 w-14 md:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
         </div>
 
         {/* Benefits */}

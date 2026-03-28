@@ -1,11 +1,12 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { HeroSection } from "@/components/home/HeroSection";
-import { ImpactCounter } from "@/components/home/ImpactCounter";
-import { HowItWorks } from "@/components/home/HowItWorks";
-import { ImpactCollage } from "@/components/home/ImpactCollage";
-import { SDGBadges } from "@/components/home/SDGBadges";
-import { PartnerCTA } from "@/components/home/PartnerCTA";
+import Hero from "@/components/home/Hero";
+import Problem from "@/components/home/Problem";
+import Solution from "@/components/home/Solution";
+import Africa from "@/components/home/Africa";
+import Alignment from "@/components/home/Alignment";
+import HowItWorks from "@/components/home/HowItWorks";
+import CTA from "@/components/home/CTA";
 import { NewsletterPopup } from "@/components/sections/NewsletterPopup";
 import { SEO } from "@/components/SEO";
 
@@ -19,13 +20,13 @@ const Index = () => {
       <Navbar />
       <NewsletterPopup />
       <main className="flex-1">
-
-        <HeroSection />
-        <ImpactCounter />
+        <Hero />
+        <Problem />
+        <Solution />
         <HowItWorks />
-        <ImpactCollage />
-        <SDGBadges />
-        <PartnerCTA />
+        <Africa />
+        <Alignment />
+        <CTA />
       </main>
       <Footer />
     </div>

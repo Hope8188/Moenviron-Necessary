@@ -17,7 +17,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import ImpactCollage from "@/components/sections/impact-collage";
 import { SEO } from "@/components/SEO";
 
 interface ImpactMetric {
@@ -302,9 +301,6 @@ const Impact = () => {
             </div>
           </div>
         </section>
-
-        {/* Process Archive replaces Collage */}
-        <ImpactCollage />
 
         {/* Interactive Analysis (Simplified) */}
         <section className="py-32 bg-white">

@@ -60,9 +60,13 @@ export default {
         },
         // Brand colors
         forest: {
-          DEFAULT: "hsl(var(--forest))",
-          light: "hsl(var(--forest-light))",
+          DEFAULT: "hsl(var(--forest) / <alpha-value>)",
+          light: "hsl(var(--forest-light) / <alpha-value>)",
+          dark: "hsl(var(--forest-dark) / <alpha-value>)",
         },
+        mint: "hsl(var(--mint) / <alpha-value>)",
+        "neon-accent": "hsl(var(--neon-accent) / <alpha-value>)",
+        "darker-green": "hsl(var(--darker-green) / <alpha-value>)",
         earth: {
           DEFAULT: "hsl(var(--earth))",
           light: "hsl(var(--earth-light))",

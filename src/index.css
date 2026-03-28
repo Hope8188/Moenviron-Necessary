@@ -9,6 +9,7 @@
     /* Earth-tone palette */
     --background: 40 20% 98%;
     --foreground: 25 30% 12%;
+    scroll-padding-top: 100px;
 
     --card: 40 25% 97%;
     --card-foreground: 25 30% 12%;
@@ -44,6 +45,10 @@
     /* Custom brand colors */
     --forest: 150 40% 25%;
     --forest-light: 150 35% 40%;
+    --forest-dark: 150 45% 15%;
+    --mint: 150 40% 90%;
+    --neon-accent: 150 60% 60%;
+    --darker-green: 150 50% 10%;
     --earth: 25 45% 35%;
     --earth-light: 25 35% 50%;
     --sand: 40 30% 85%;
@@ -211,6 +216,17 @@
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  .futuristic-border {
+    border: 1px solid hsl(var(--mint) / 0.3);
+    @apply bg-white/5 backdrop-blur-md relative;
+  }
+
+  .corner-element {
+    border-top: 2px solid hsl(var(--neon-accent));
+    border-left: 2px solid hsl(var(--neon-accent));
+    @apply absolute w-3 h-3 z-20;
+  }
 }
 
 /* Admin tabs: prevent shrinking so they stay on one line */
@@ -241,4 +257,35 @@
 
 .aurora-animate {
   animation: animate-aurora 60s linear infinite;
+}
+
+/* Continuous Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Font utility classes */
+.font-heading {
+  font-family: var(--font-heading), sans-serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Fallback font variables for index.css */
+:root {
+  --font-heading: "Montserrat", sans-serif;
 }
