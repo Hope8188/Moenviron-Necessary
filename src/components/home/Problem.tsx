@@ -13,7 +13,7 @@ const cards = [
     icon: Zap,
     title: "Growing Demand",
     text: "Demand for affordable clothing continues to grow unprecedentedly.",
-    image: "/demand.jpg",
+    image: "/demand.webp",
     imageAlt: "Growing demand for affordable clothing",
     description: "Fast fashion consumption has doubled in the last 15 years, with the average consumer buying 60% more clothing items but keeping them for half as long."
   },
@@ -21,7 +21,7 @@ const cards = [
     icon: AlertCircle,
     title: "Underdeveloped Systems",
     text: "Waste management systems remain underdeveloped in emerging markets.",
-    image: "/waste.jpg",
+    image: "/waste.webp",
     imageAlt: "Underdeveloped waste management systems",
     description: "Only 15% of post-consumer textiles are collected for recycling globally, with emerging markets lacking proper infrastructure for sorting and processing."
   },
@@ -29,7 +29,7 @@ const cards = [
     icon: Heart,
     title: "Lost Resources",
     text: "Valuable materials are lost instead of reused.",
-    image: "/reuse.jpg",
+    image: "/reuse.webp",
     imageAlt: "Lost textile resources",
     description: "$500 billion in value is lost annually due to clothing underutilization and lack of recycling, with 73% of textiles ending up in landfill or incineration."
   },

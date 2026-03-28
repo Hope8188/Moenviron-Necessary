@@ -123,7 +123,7 @@ export default function Africa() {
               className="w-full h-[300px] md:h-[400px] lg:h-[500px] bg-mint bg-cover bg-center rounded-2xl md:rounded-3xl relative overflow-hidden"
               style={{
                 backgroundImage:
-                  "url('/moet.png')",
+                  "url('/moet.webp')",
               }}
             >
               {/* Overlay */}

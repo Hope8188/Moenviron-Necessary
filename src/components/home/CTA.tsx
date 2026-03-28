@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -44,11 +45,12 @@ export default function CTA() {
           </h2>
 
           <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 md:gap-6 mt-16">
-            <button
+            <Link
+              to="/partners"
               className="w-full md:w-auto max-w-[280px] md:max-w-none px-8 py-[0.875rem] font-display font-semibold rounded-full bg-[#3EE58E] text-[#183D32] shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:bg-white hover:shadow-[0_0_30px_rgba(62,229,142,0.6)] hover:-translate-y-0.5 transition-all duration-400 cursor-pointer text-[0.9375rem] md:text-base"
             >
               Partner With Us
-            </button>
+            </Link>
             <button
               className="w-full md:w-auto max-w-[280px] md:max-w-none px-8 py-[0.875rem] font-display font-semibold rounded-full bg-transparent text-white border border-white hover:bg-white/10 hover:border-[#3EE58E] hover:text-[#3EE58E] transition-all duration-400 cursor-pointer text-[0.9375rem] md:text-base"
             >

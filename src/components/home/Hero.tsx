@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import {
@@ -170,13 +171,13 @@ export default function Hero() {
             global supply chains and Africa&#39;s growing circular economy.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-start">
-            <a
-              href="#contact"
+            <Link
+              to="/partners"
               className="hero-btn w-full sm:w-auto text-center px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-gradient-to-r from-[#183D32] to-[#2a5f4f] text-white shadow-[0_4px_14px_rgba(24,61,50,0.4)] hover:from-[#2a5f4f] hover:to-[#183D32] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-300"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Partner With Us
-            </a>
+            </Link>
             <a
               href="#how-it-works"
               className="hero-btn w-full sm:w-auto text-center px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-gradient-to-r from-[#183D32] to-[#2a5f4f] text-white shadow-[0_4px_14px_rgba(24,61,50,0.4)] hover:from-[#2a5f4f] hover:to-[#183D32] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-300"
