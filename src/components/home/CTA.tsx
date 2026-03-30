@@ -47,17 +47,20 @@ export default function CTA() {
           <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 md:gap-6 mt-16">
             <Link
               to="/partners"
-              className="w-full md:w-auto max-w-[280px] md:max-w-none px-8 py-[0.875rem] font-display font-semibold rounded-full bg-[#3EE58E] text-[#183D32] shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:bg-white hover:shadow-[0_0_30px_rgba(62,229,142,0.6)] hover:-translate-y-0.5 transition-all duration-400 cursor-pointer text-[0.9375rem] md:text-base"
+              className="hero-btn w-full md:w-auto max-w-[280px] md:max-w-none px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-[#3EE58E] text-[#183D32] shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:bg-white hover:shadow-[0_0_30px_rgba(62,229,142,0.6)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-400 cursor-pointer"
+              style={{ fontFamily: "var(--font-heading)" }}
             >
               Partner With Us
             </Link>
             <button
-              className="w-full md:w-auto max-w-[280px] md:max-w-none px-8 py-[0.875rem] font-display font-semibold rounded-full bg-transparent text-white border border-white hover:bg-white/10 hover:border-[#3EE58E] hover:text-[#3EE58E] transition-all duration-400 cursor-pointer text-[0.9375rem] md:text-base"
+              className="hero-btn w-full md:w-auto max-w-[280px] md:max-w-none px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-transparent text-white border border-white hover:bg-white/10 hover:border-[#3EE58E] hover:text-[#3EE58E] hover:-translate-y-0.5 transition-all duration-400 cursor-pointer"
+              style={{ fontFamily: "var(--font-heading)" }}
             >
               Join Our Network
             </button>
             <button
-              className="w-full md:w-auto max-w-[280px] md:max-w-none px-8 py-[0.875rem] font-display font-semibold rounded-full bg-[#3EE58E] text-[#183D32] shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:bg-white hover:shadow-[0_0_30px_rgba(62,229,142,0.6)] hover:-translate-y-0.5 transition-all duration-400 cursor-pointer text-[0.9375rem] md:text-base"
+              className="hero-btn w-full md:w-auto max-w-[280px] md:max-w-none px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-[#3EE58E] text-[#183D32] shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:bg-white hover:shadow-[0_0_30px_rgba(62,229,142,0.6)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-400 cursor-pointer"
+              style={{ fontFamily: "var(--font-heading)" }}
             >
               Explore Opportunities
             </button>

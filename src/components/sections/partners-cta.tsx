@@ -22,7 +22,8 @@ const PartnersCTA = () => {
             
             <a 
               href="/partners" 
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md bg-white px-8 py-3 text-sm font-medium text-[#2D4C3B] shadow-md transition-all hover:bg-[#F3F0E8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="hero-btn inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold text-[#2D4C3B] shadow-md transition-all hover:bg-[#F3F0E8] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)]"
+              style={{ fontFamily: "var(--font-heading)" }}
             >
               Explore Partnership
               <ArrowRight className="h-4 w-4" />
