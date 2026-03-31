@@ -56,7 +56,7 @@ export function Navbar() {
             <Link
               key={link.href}
               to={link.href}
-              className={`relative text-sm font-medium transition-all duration-200 hover:text-primary ${
+              className={`relative text-sm font-bold transition-all duration-200 hover:text-primary ${
                 location.pathname === link.href
                   ? "text-primary"
                   : "text-muted-foreground"
@@ -71,7 +71,7 @@ export function Navbar() {
           {isAdmin && (
             <Link
               to="/admin"
-              className={`relative text-sm font-medium transition-all duration-200 hover:text-primary ${
+              className={`relative text-sm font-bold transition-all duration-200 hover:text-primary ${
                 location.pathname === "/admin" ? "text-primary" : "text-muted-foreground"
               }`}
             >
@@ -141,7 +141,7 @@ export function Navbar() {
                 key={link.href}
                 to={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`rounded-lg px-4 py-3 text-base font-medium transition-all duration-200 ${
+                className={`rounded-lg px-4 py-3 text-base font-bold transition-all duration-200 ${
                   location.pathname === link.href
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"

@@ -77,7 +77,7 @@ export default function About() {
             className="text-3xl md:text-5xl lg:text-7xl font-extrabold mb-6 tracking-tight text-dark-green leading-[1.05]"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            About Moenviron
+            About <span className="text-forest">Moenviron</span>
           </h1>
           <p 
             className="text-lg md:text-xl lg:text-2xl text-dark-green/80 leading-relaxed max-w-3xl mx-auto font-medium"

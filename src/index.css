@@ -132,6 +132,22 @@
   h5,
   h6 {
     @apply font-semibold tracking-tight;
+    font-family: var(--font-heading), sans-serif;
+    color: hsl(var(--foreground));
+  }
+
+  h1 {
+    @apply text-5xl;
+    color: #183D32;
+    font-weight: 800;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl font-medium;
   }
 }
 

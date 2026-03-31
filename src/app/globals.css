@@ -134,19 +134,22 @@
     line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--color-foreground);
+    font-family: var(--font-heading);
   }
 
   h1 {
-    font-size: 3.75rem;
+    font-size: 3rem;
+    color: #183D32;
+    font-weight: 800;
   }
 
   h2 {
-    font-size: 2.25rem;
+    font-size: 2rem;
     line-height: 1.2;
   }
 
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.4;
   }
