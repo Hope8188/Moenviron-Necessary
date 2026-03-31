@@ -335,7 +335,7 @@ export default function Investor() {
               <div className="bg-[#183D32] bg-[radial-gradient(circle_at_top_right,var(--color-forest),transparent_60%)] p-8 md:p-12 rounded-[3rem] text-white shadow-2xl relative overflow-hidden border border-white/10">
                 <div className="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-[radial-gradient(circle_at_top_right,var(--color-forest),transparent_70%)] opacity-50" />
                 
-                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6" style={{ fontFamily: "var(--font-heading)" }}>What We're Building Toward</h3>
+                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-white" style={{ fontFamily: "var(--font-heading)" }}>What We're Building Toward</h3>
                 <p className="text-base md:text-lg text-white/80 font-medium mb-8 leading-relaxed">
                   Our long-term objective is to become a circular textile infrastructure company, enabling:
                 </p>

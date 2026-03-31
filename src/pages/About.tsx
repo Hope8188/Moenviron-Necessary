@@ -293,7 +293,7 @@ export default function About() {
               <div className="absolute w-[400px] h-[400px] rounded-full blur-[100px] bg-neon-accent/15 -top-20 -right-20" />
               <div className="relative bg-[#183D32] bg-[radial-gradient(circle_at_top_right,var(--color-forest),transparent_60%)] p-10 md:p-12 rounded-[2.5rem] text-white shadow-2xl overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-forest/20 to-transparent" />
-                <h3 className="text-2xl font-bold mb-10 relative z-10" style={{ fontFamily: "var(--font-heading)" }}>Impact at a Glance</h3>
+                <h3 className="text-2xl font-bold mb-10 relative z-10 text-white" style={{ fontFamily: "var(--font-heading)" }}>Impact at a Glance</h3>
                 <div className="grid grid-cols-2 gap-10 relative z-10">
                   <div>
                     <p className="text-4xl md:text-5xl font-bold text-neon-accent mb-2" style={{ fontFamily: "var(--font-heading)" }}>70%</p>

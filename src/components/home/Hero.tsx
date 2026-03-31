@@ -143,7 +143,7 @@ export default function Hero() {
   ];
 
   return (
-    <section ref={containerRef} className="relative pt-20 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-24 flex flex-col min-h-screen overflow-hidden bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)]">
+    <section ref={containerRef} className="relative pt-8 pb-12 md:pt-12 md:pb-16 lg:pt-12 lg:pb-24 flex flex-col min-h-screen overflow-hidden bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)]">
       {/* Background Shapes */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="bg-shape-1 absolute w-[200px] h-[200px] md:w-[350px] md:h-[350px] lg:w-[500px] lg:h-[500px] bg-[rgba(196,223,200,0.4)] rounded-full blur-[80px] -top-[30px] -right-[30px] lg:-top-[80px] lg:-right-[80px]" />
@@ -173,14 +173,14 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-start">
             <Link
               to="/partners"
-              className="hero-btn w-full sm:w-auto text-center px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-gradient-to-r from-[#183D32] to-[#2a5f4f] text-white shadow-[0_4px_14px_rgba(24,61,50,0.4)] hover:from-[#2a5f4f] hover:to-[#183D32] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-300"
+              className="hero-btn w-full sm:w-auto text-center px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-[#3EE58E] text-[#183D32] shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:bg-white hover:shadow-[0_0_30px_rgba(62,229,142,0.6)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-300"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Partner With Us
             </Link>
             <a
               href="#how-it-works"
-              className="hero-btn w-full sm:w-auto text-center px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-gradient-to-r from-[#183D32] to-[#2a5f4f] text-white shadow-[0_4px_14px_rgba(24,61,50,0.4)] hover:from-[#2a5f4f] hover:to-[#183D32] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-300"
+              className="hero-btn w-full sm:w-auto text-center px-6 md:px-8 lg:px-10 py-3 md:py-4 lg:py-[1.125rem] text-sm md:text-base lg:text-lg font-heading font-semibold rounded-full bg-[#3EE58E] text-[#183D32] shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:bg-white hover:shadow-[0_0_30px_rgba(62,229,142,0.6)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(24,61,50,0.5)] transition-all duration-300"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Explore Our Model
