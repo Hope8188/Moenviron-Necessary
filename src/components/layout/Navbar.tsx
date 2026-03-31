@@ -25,15 +25,12 @@ export function Navbar() {
     logoUrl: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/2274ce5a-a92d-4b73-b73e-99562f585de3/moenviron-logo-resized-1768037588209.webp?width=400&height=200&resize=contain"
   };
 
-  const navLinks = (navCms?.content as { links: NavLink[] })?.links || [
+  const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About Us" },
-    { href: "/projects", label: "Initiatives" },
-    { href: "/impact", label: "Impact" },
-    { href: "/library", label: "Library" },
-    { href: "/donate", label: "Donate" },
-    { href: "/partners", label: "For Brands" },
-    { href: "/shop", label: "Shop" },
+    { href: "/about", label: "About" },
+    { href: "/partners", label: "Partnership" },
+    { href: "/investors", label: "Investors" },
+    { href: "/contact", label: "Contact" },
   ];
 
   return (
@@ -51,9 +48,10 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => (
+        {/* Desktop Navigation - Moved to right */}
+        <div className="ml-auto hidden items-center gap-8 md:flex">
+          <div className="flex items-center gap-6">
+            {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
@@ -82,11 +80,11 @@ export function Navbar() {
               )}
             </Link>
           )}
-        </div>
+          </div>
 
-        {/* Desktop Actions */}
-        <div className="hidden items-center gap-2 md:flex">
-          <Link to="/cart">
+          {/* Desktop Actions - Also on the right, after Nav */}
+          <div className="flex items-center gap-2">
+            <Link to="/cart">
             <Button variant="ghost" size="icon" className="relative">
               <ShoppingBag className="h-5 w-5" />
               {itemCount > 0 && (
@@ -119,9 +117,8 @@ export function Navbar() {
               </Button>
             </Link>
           )}
-          <Link to="/contact">
-            <Button>Contact Us</Button>
-          </Link>
+            {/* Action buttons could go here */}
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
@@ -172,9 +169,7 @@ export function Navbar() {
                   </Button>
                 </Link>
               )}
-              <Link to="/contact" onClick={() => setIsOpen(false)}>
-                <Button size="sm">Contact Us</Button>
-              </Link>
+              {/* Mobile action buttons could go here */}
             </div>
           </div>
         </div>

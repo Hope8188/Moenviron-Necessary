@@ -1,319 +1,362 @@
+"use client";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowRight, Globe, Leaf, Recycle, TrendingUp, Users, Handshake, Target } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Globe, FileText, ExternalLink, BarChart, Quote, Shield, Sparkles, Zap } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { SEO } from "@/components/SEO";
 
-const About = () => {
-  const [selectedPaper, setSelectedPaper] = useState<{ title: string; description: string; date: string; content: string; category: string } | null>(null);
+gsap.registerPlugin(ScrollTrigger);
 
-  const whitepapers = [
-    {
-      title: "2026 Textile Traceability Report",
-        description: "A comprehensive look at our supply chain transparency from UK collection to Kenya and Africa processing.",
-        date: "January 2026",
-        category: "Sustainability",
-        content: `
-          ## Executive Summary
-          As of January 2026, Moenviron has achieved 100% blockchain-verified traceability for all textile movements between the UK and Kenya and Africa. This report details our methodology and the carbon reduction results.
-          
-          ## Key Findings
-          - 45% reduction in logistics-related carbon emissions compared to 2024.
-          - 1.2 million kg of textiles diverted from landfills in the last 12 months.
-          - 300+ local jobs created in the Nairobi upcycling facility.
-          
-          ## Future Outlook
-          We are expanding our collection points across Northern Europe by Q3 2026.
-        `
-      },
-      {
-        title: "Nairobi Processing: A Circular Case Study",
-        description: "Exploring the socio-economic impact of our artisanal upcycling facility in the heart of Kenya and Africa.",
-        date: "January 2026",
-        category: "Impact",
-        content: `
-          ## The Nairobi Model
-          Our facility in Nairobi serves as a blueprint for localized circular economies. By combining high-tech sorting with traditional artisanal repair, we create high-value fashion from perceived waste.
-          
-          ## Socio-Economic Impact
-          - Average artisan wage is 60% above the regional living wage.
-          - On-site daycare and education programs for 150 families.
-          - Zero-waste production: All offcuts are repurposed into industrial stuffing or paper.
-        `
-      },
-      {
-        title: "The UK-Kenya and Africa Fashion Bridge 2026",
-        description: "Policy recommendations for cross-border circular economies in the textile sector.",
-        date: "January 2026",
-        category: "Policy",
-        content: `
-          ## Policy Framework
-          This paper outlines the necessary regulatory shifts to support circular trade. We advocate for "Green Lanes" in international shipping for certified upcycled goods.
-          
-          ## Recommendations
-          1. Removal of import duties on textile waste destined for verified upcycling.
-          2. Standardized carbon labeling across the Commonwealth.
-          3. Tax incentives for brands participating in verified "Take-Back" programs.
-        `
-      }
-    ];
+export default function About() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    // Background shapes floating animation
+    gsap.to(".bg-shape-1", {
+      y: -20,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+    gsap.to(".bg-shape-2", {
+      y: 20,
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: 0.5
+    });
+
+    // Text entrance animation
+    gsap.fromTo(textRef.current, 
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+    );
+
+    gsap.utils.toArray<HTMLElement>(".about-section").forEach((section, i) => {
+      gsap.fromTo(section,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    });
+  }, { scope: containerRef });
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SEO
-          title="About Us"
-          description="Learn about Moenviron's mission to transform fashion's relationship with waste through our UK-Kenya circular economy partnership."
-          url="https://moenviron.com/about"
-          keywords="sustainable fashion brand, circular economy UK Kenya, textile recycling, ethical fashion company, eco fashion brand"
-          breadcrumbs={[{ name: "About Us", url: "/about" }]}
-        />
       <Navbar />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="gradient-hero py-12 md:py-24">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 className="font-display text-3xl font-bold text-foreground md:text-5xl">
-                About Moenviron
-              </h1>
-              <p className="mt-3 md:mt-4 text-base md:text-lg text-muted-foreground px-4">
-                We're on a mission to transform fashion's relationship with waste, 
-                creating a circular economy that benefits people and planet.
-              </p>
-            </div>
-          </div>
-        </section>
+        <div ref={containerRef} className="bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)] pt-20 overflow-hidden">
+      {/* Hero Section */}
+      <section 
+        ref={heroRef}
+        className="relative py-20 md:py-28 lg:py-32 flex flex-col items-center justify-center overflow-hidden"
+      >
+        {/* Background Shapes */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="bg-shape-1 absolute w-[200px] h-[200px] md:w-[350px] md:h-[350px] lg:w-[500px] lg:h-[500px] bg-[rgba(196,223,200,0.4)] rounded-full blur-[80px] -top-[30px] -right-[30px] lg:-top-[80px] lg:-right-[80px]" />
+          <div className="bg-shape-2 absolute w-[150px] h-[150px] md:w-[250px] md:h-[250px] lg:w-[350px] lg:h-[350px] bg-[rgba(62,229,142,0.1)] rounded-full blur-[80px] bottom-0 -left-[30px] lg:-left-[80px]" />
+        </div>
 
-        {/* Mission */}
-        <section className="py-10 md:py-16">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-8 md:gap-12 lg:grid-cols-2 lg:items-center">
-              <div className="animate-fade-in order-2 lg:order-1">
-                <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">Our Mission</h2>
-                <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground leading-relaxed">
-                  Every year, millions of tonnes of textiles end up in landfills across the UK. 
-                  At Moenviron, we see this waste as an opportunity. We collect discarded textiles, 
-                  ship them to our facility in Kenya, where skilled artisans sort, repair, and 
-                  transform them into premium sustainable fashion.
-                </p>
-                <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground leading-relaxed">
-                  Our UK-Kenya partnership creates jobs, reduces environmental impact, and proves 
-                  that circular fashion can be both ethical and profitable.
-                </p>
-              </div>
-              <div className="relative aspect-[4/3] md:aspect-[4/5] overflow-hidden rounded-xl md:rounded-2xl bg-muted shadow-xl md:shadow-2xl animate-fade-in-up order-1 lg:order-2">
-                <img 
-                  src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000&auto=format&fit=crop" 
-                  alt="Sustainable fashion mission" 
-                  className="h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              </div>
-            </div>
-          </div>
-        </section>
+        <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8 text-center" ref={textRef}>
+          <h1 
+            className="text-3xl md:text-5xl lg:text-7xl font-extrabold mb-6 tracking-tight text-dark-green leading-[1.05]"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            About Moenviron
+          </h1>
+          <p 
+            className="text-lg md:text-xl lg:text-2xl text-dark-green/80 leading-relaxed max-w-3xl mx-auto font-medium"
+          >
+            Redefining Textile Waste into Circular Value for a Sustainable Future
+          </p>
+        </div>
+      </section>
 
-        {/* CEO Vision */}
-        <section className="bg-secondary/30 py-10 md:py-16">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-4xl">
-              <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
-                <div className="w-32 h-32 md:w-56 md:h-56 flex-shrink-0 rounded-xl md:rounded-2xl overflow-hidden border-2 md:border-4 border-white shadow-xl md:shadow-2xl rotate-3 transition-transform hover:rotate-0">
-                  <img 
-                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/2274ce5a-a92d-4b73-b73e-99562f585de3/image-1768041036895.png?width=8000&height=8000&resize=contain" 
-                    alt="Moses Mnai - CEO" 
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <Quote className="h-8 w-8 md:h-10 md:w-10 text-primary/20 mb-3 md:mb-4 mx-auto md:mx-0" />
-                  <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-3 md:mb-4">A Note from our CEO</h2>
-                  <p className="text-base md:text-xl italic text-muted-foreground mb-4 md:mb-6 leading-relaxed">
-                    “At Moenviron, we believe that nurturing nature is life. Our mission is to bridge the gap between the global textile waste and Africa’s artisanal brilliance, creating a circular system that empowers communities and protects our planet.”
-                  </p>
-                  <p className="font-display text-sm md:text-lg font-semibold text-foreground">— Moses Mnai, Founder & CEO</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Values */}
-        <section className="bg-card py-10 md:py-16">
-          <div className="container px-4 md:px-6">
-            <h2 className="mb-3 md:mb-4 text-center text-2xl md:text-3xl font-bold text-foreground">Why Choose Us</h2>
-            <p className="mb-8 md:mb-12 text-center text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-              Premium quality, ethically restored fashion that's built to last
+      {/* Introduction */}
+      <section className="about-section py-16 md:py-24 relative z-10">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-xl md:text-2xl text-text-dark leading-relaxed font-medium">
+              Moenviron is a circular economy company focused on transforming textile waste into structured, scalable value. 
+              We operate at the intersection of sustainability, global trade, and material innovation—developing solutions 
+              that extend the life of textiles today while building the systems required for full circularity tomorrow.
             </p>
-            <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-3">
-              {[
-                {
-                  icon: Shield,
-                  title: "Sanitized & Safe",
-                  description: "Every piece undergoes professional sanitization and quality checks before reaching you.",
-                },
-                {
-                  icon: Sparkles,
-                  title: "Artisan Restored",
-                  description: "Skilled Kenyan craftspeople repair and elevate each garment to premium standards.",
-                },
-                {
-                  icon: Zap,
-                  title: "Built to Last",
-                  description: "High-quality materials and expert restoration mean your pieces last longer than fast fashion.",
-                },
-              ].map((value) => {
-                const Icon = value.icon;
-                return (
-                  <div key={value.title} className="rounded-xl border border-border bg-background p-4 md:p-6 text-center">
-                    <div className="mx-auto mb-3 md:mb-4 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full bg-primary/10">
-                      <Icon className="h-6 w-6 md:h-7 md:w-7 text-primary" />
-                    </div>
-                    <h3 className="mb-2 text-base md:text-lg font-semibold text-foreground">{value.title}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground">{value.description}</p>
-                  </div>
-                );
-              })}
-            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Team */}
-        <section className="py-10 md:py-16">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">UK-Kenya Partnership</h2>
-              <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground">
-                Our team spans two continents, united by a shared commitment to sustainable fashion. 
-                From our London office coordinating collections to our Nairobi facility where the 
-                transformation happens, we work together to close the fashion loop.
+      {/* Vision & Mission */}
+      <section className="about-section py-16 md:py-24">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+            <div className="bg-white border border-light-green rounded-3xl p-8 md:p-10 text-center shadow-[0_4px_20px_rgba(30,58,47,0.08)] hover:-translate-y-[5px] hover:shadow-[0_15px_30px_rgba(30,58,47,0.1)] hover:border-mint transition-all duration-400 group">
+              <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-5 bg-light-green text-forest rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:bg-neon-accent/20">
+                <Target className="w-7 h-7 md:w-8 md:h-8" strokeWidth={1.5} />
+              </div>
+              <h3 
+                className="text-2xl md:text-3xl font-bold mb-6 text-dark-green"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                Our Vision
+              </h3>
+              <p className="text-lg text-text-dark leading-relaxed">
+                To become a leading circular textile infrastructure company connecting global supply chains with emerging markets, 
+                enabling textiles to be reused, recycled, and continuously reintegrated into the economy.
               </p>
             </div>
-          </div>
-        </section>
-
-        {/* Whitepapers Section */}
-        <section id="whitepapers" className="bg-secondary/30 py-10 md:py-16 scroll-mt-20">
-          <div className="container px-4 md:px-6">
-            <div className="mb-8 md:mb-12 text-center">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Whitepapers & Insights</h2>
-              <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-                Discover our deep dives into circular economy, textile traceability, and 
-                the socio-economic impact of sustainable fashion in East Africa.
-              </p>
-            </div>
-            
-          <div className="grid gap-4 md:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {whitepapers.map((paper) => (
-              <div key={paper.title} className="group relative flex flex-col rounded-xl md:rounded-2xl border border-border bg-background p-4 md:p-6 transition-all hover:shadow-lg">
-                <div className="mb-3 md:mb-4 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <FileText className="h-5 w-5 md:h-6 md:w-6" />
-                </div>
-                <div className="mb-2 flex items-center gap-2 text-[10px] md:text-xs font-medium text-primary uppercase tracking-wider">
-                  <BarChart className="h-3 w-3" />
-                  {paper.category}
-                </div>
-                <h3 className="mb-2 text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                  {paper.title}
-                </h3>
-                <p className="mb-4 md:mb-6 flex-1 text-xs md:text-sm text-muted-foreground leading-relaxed">
-                  {paper.description}
+            <div className="bg-white border border-light-green rounded-3xl p-8 md:p-10 text-center shadow-[0_4px_20px_rgba(30,58,47,0.08)] hover:-translate-y-[5px] hover:shadow-[0_15px_30px_rgba(30,58,47,0.1)] hover:border-mint transition-all duration-400 group">
+              <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-5 bg-neon-accent/20 text-forest rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:bg-neon-accent/30">
+                <Leaf className="w-7 h-7 md:w-8 md:h-8" strokeWidth={1.5} />
+              </div>
+              <h3 
+                className="text-2xl md:text-3xl font-bold mb-6 text-dark-green"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                Our Mission
+              </h3>
+              <div className="space-y-4">
+                <p className="text-lg text-text-dark leading-relaxed">
+                  To reduce textile waste and unlock its value by:
                 </p>
-                <div className="flex items-center justify-between mt-auto">
-                  <span className="text-[10px] md:text-xs text-muted-foreground">{paper.date}</span>
-                  <button 
-                    onClick={() => setSelectedPaper(paper)}
-                    className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-semibold text-primary hover:underline"
-                  >
-                    Read Paper
-                    <ExternalLink className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                  </button>
-                </div>
+                <ul className="space-y-4 text-text-dark">
+                  <li className="flex items-start gap-4">
+                    <div className="mt-1.5 w-5 h-5 rounded-full bg-forest/20 flex items-center justify-center flex-shrink-0">
+                      <ArrowRight className="w-3 h-3 text-forest" />
+                    </div>
+                    <span className="text-lg">Enabling efficient recovery of post-consumer textiles</span>
+                  </li>
+                  <li className="flex items-start gap-4">
+                    <div className="mt-1.5 w-5 h-5 rounded-full bg-forest/20 flex items-center justify-center flex-shrink-0">
+                      <ArrowRight className="w-3 h-3 text-forest" />
+                    </div>
+                    <span className="text-lg">Supporting reuse through structured second-hand markets</span>
+                  </li>
+                  <li className="flex items-start gap-4">
+                    <div className="mt-1.5 w-5 h-5 rounded-full bg-forest/20 flex items-center justify-center flex-shrink-0">
+                      <ArrowRight className="w-3 h-3 text-forest" />
+                    </div>
+                    <span className="text-lg">Developing scalable pathways for textile-to-textile recycling</span>
+                  </li>
+                </ul>
               </div>
-            ))}
+            </div>
           </div>
+        </div>
+      </section>
 
-          <Dialog open={!!selectedPaper} onOpenChange={() => setSelectedPaper(null)}>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto mx-4">
-              <DialogHeader>
-                <div className="flex items-center gap-2 text-xs font-medium text-primary uppercase tracking-wider mb-2">
-                  <BarChart className="h-3 w-3" />
-                  {selectedPaper?.category}
-                </div>
-                <DialogTitle className="font-display text-xl md:text-2xl lg:text-3xl">{selectedPaper?.title}</DialogTitle>
-                <DialogDescription className="text-muted-foreground italic text-sm">
-                  Published {selectedPaper?.date}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="mt-4 md:mt-6 prose prose-slate max-w-none">
-                {selectedPaper?.content.split('\n').map((line: string, i: number) => {
-                  if (line.trim().startsWith('##')) {
-                    return <h3 key={i} className="text-lg md:text-xl font-bold mt-4 md:mt-6 mb-2 md:mb-3 text-foreground">{line.replace('##', '').trim()}</h3>;
-                  }
-                  if (line.trim().startsWith('-')) {
-                    return <li key={i} className="ml-4 mb-1 text-sm text-muted-foreground">{line.replace('-', '').trim()}</li>;
-                  }
-                  if (line.trim().length > 0) {
-                    return <p key={i} className="mb-3 md:mb-4 text-sm text-muted-foreground leading-relaxed">{line.trim()}</p>;
-                  }
-                  return null;
-                })}
+      {/* The Opportunity */}
+      <section className="about-section py-16 md:py-24">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+          <div className="max-w-3xl mb-16">
+            <h2 
+              className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 text-dark-green"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              The Opportunity We See
+            </h2>
+            <p className="text-xl text-text-dark leading-relaxed opacity-90">
+              The global textile industry is undergoing a structural shift. Rising consumption, increasing waste, and tightening 
+              environmental regulations, particularly across Europe, are accelerating the need for circular solutions.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="p-8 md:p-10 rounded-3xl bg-white border border-light-green hover:border-mint transition-all duration-300 group">
+              <div className="w-12 h-12 rounded-xl bg-light-green text-forest flex items-center justify-center mb-6 group-hover:bg-neon-accent/20 transition-all duration-300">
+                <TrendingUp className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t flex justify-end">
-                <Button onClick={() => setSelectedPaper(null)} size="sm">Close Reader</Button>
+              <h3 className="text-xl font-bold text-dark-green mb-4">Market Gap</h3>
+              <p className="text-text-dark leading-relaxed">
+                Large volumes of reusable textiles remain underutilized despite growing demand for affordable clothing in emerging markets.
+              </p>
+            </div>
+            <div className="p-8 md:p-10 rounded-3xl bg-white border border-light-green hover:border-mint transition-all duration-300 group">
+              <div className="w-12 h-12 rounded-xl bg-light-green text-forest flex items-center justify-center mb-6 group-hover:bg-neon-accent/20 transition-all duration-300">
+                <Globe className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-            </DialogContent>
-          </Dialog>
+              <h3 className="text-xl font-bold text-dark-green mb-4">Growing Demand</h3>
+              <p className="text-text-dark leading-relaxed">
+                Demand for affordable clothing continues to grow in emerging markets, creating opportunities for structured redistribution.
+              </p>
+            </div>
+            <div className="p-8 md:p-10 rounded-3xl bg-white border border-light-green hover:border-mint transition-all duration-300 group">
+              <div className="w-12 h-12 rounded-xl bg-light-green text-forest flex items-center justify-center mb-6 group-hover:bg-neon-accent/20 transition-all duration-300">
+                <Recycle className="w-5 h-5 md:w-6 md:h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-dark-green mb-4">Infrastructure Need</h3>
+              <p className="text-text-dark leading-relaxed">
+                Recycling infrastructure for textiles is still limited and fragmented, presenting a significant opportunity for innovation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
+      {/* Our Approach */}
+      <section className="about-section py-16 md:py-24 bg-dark-green/5">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+          <h2 
+            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-16 text-dark-green text-center"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Our Approach
+          </h2>
+          
+          <div className="space-y-10 max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 p-8 md:p-10 bg-white border border-light-green rounded-3xl shadow-[0_4px_20px_rgba(30,58,47,0.08)] group hover:-translate-y-[5px] hover:shadow-[0_15px_30px_rgba(30,58,47,0.1)] hover:border-mint transition-all duration-400">
+              <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#183D32] text-white flex items-center justify-center text-2xl md:text-3xl font-bold shadow-lg" style={{ fontFamily: "var(--font-heading)" }}>
+                01
+              </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-bold mb-3 text-dark-green" style={{ fontFamily: "var(--font-heading)" }}>
+                  Recovery & Sourcing
+                </h3>
+                <p className="text-base md:text-lg text-text-dark leading-relaxed">
+                  We collaborate with partners to channel post-consumer textiles into organized value streams, ensuring materials 
+                  are not lost to landfill or incineration.
+                </p>
+              </div>
+            </div>
 
-            <div className="mt-10 md:mt-16 rounded-xl md:rounded-2xl bg-primary p-6 md:p-8 lg:p-12 text-white">
-              <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
-                <div className="text-center md:text-left">
-                  <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Informed by Global Standards</h3>
-                  <p className="text-sm md:text-base text-primary-foreground/90 mb-4 md:mb-6">
-                    Our research and methodology are aligned with industry leaders like the Ellen MacArthur Foundation 
-                    and the Global Fashion Agenda.
-                  </p>
-                  <div className="flex flex-wrap gap-2 md:gap-4 justify-center md:justify-start">
-                    <a 
-                      href="https://www.ellenmacarthurfoundation.org/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 md:gap-2 rounded-lg bg-white/10 px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium hover:bg-white/20 transition-colors"
-                    >
-                      Ellen MacArthur
-                      <ExternalLink className="h-3 w-3 md:h-4 md:w-4" />
-                    </a>
-                    <a 
-                      href="https://globalfashionagenda.org/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 md:gap-2 rounded-lg bg-white/10 px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium hover:bg-white/20 transition-colors"
-                    >
-                      Global Fashion Agenda
-                      <ExternalLink className="h-3 w-3 md:h-4 md:w-4" />
-                    </a>
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 p-8 md:p-10 bg-white border border-light-green rounded-3xl shadow-[0_4px_20px_rgba(30,58,47,0.08)] group hover:-translate-y-[5px] hover:shadow-[0_15px_30px_rgba(30,58,47,0.1)] hover:border-mint transition-all duration-400">
+              <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#183D32] text-white flex items-center justify-center text-2xl md:text-3xl font-bold shadow-lg" style={{ fontFamily: "var(--font-heading)" }}>
+                02
+              </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-bold mb-3 text-dark-green" style={{ fontFamily: "var(--font-heading)" }}>
+                  Reuse & Redistribution
+                </h3>
+                <p className="text-base md:text-lg text-text-dark leading-relaxed">
+                  We align with established second-hand ecosystems to extend garment life, supporting markets where demand, 
+                  quality control, and economic value already exist.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 p-8 md:p-10 bg-white border border-light-green rounded-3xl shadow-[0_4px_20px_rgba(30,58,47,0.08)] group hover:-translate-y-[5px] hover:shadow-[0_15px_30px_rgba(30,58,47,0.1)] hover:border-mint transition-all duration-400">
+              <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#183D32] text-white flex items-center justify-center text-2xl md:text-3xl font-bold shadow-lg" style={{ fontFamily: "var(--font-heading)" }}>
+                03
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold mb-4 text-dark-green" style={{ fontFamily: "var(--font-heading)" }}>
+                  Circular Processing <span className="text-base font-normal text-forest">(Next Phase)</span>
+                </h3>
+                <p className="text-lg text-text-dark leading-relaxed">
+                  We are developing pathways for textile recycling and material recovery, enabling non-reusable textiles 
+                  to be transformed into new raw materials.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why This Matters */}
+      <section className="about-section py-16 md:py-24">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 
+                className="text-2xl md:text-3xl lg:text-4xl font-bold mb-8 text-dark-green"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                Why This Matters
+              </h2>
+              <div className="space-y-6">
+                <p className="text-lg text-text-dark leading-relaxed">
+                  Extending the life of textiles is one of the most effective ways to reduce environmental impact. 
+                  Reuse significantly lowers emissions, reduces resource consumption, and creates economic opportunities 
+                  across the value chain.
+                </p>
+                <p className="text-lg text-text-dark leading-relaxed">
+                  At the same time, building recycling capacity is essential to address textiles that have reached end-of-life. 
+                  Moenviron's model integrates both—ensuring no value is lost.
+                </p>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute w-[400px] h-[400px] rounded-full blur-[100px] bg-neon-accent/15 -top-20 -right-20" />
+              <div className="relative bg-[#183D32] bg-[radial-gradient(circle_at_top_right,var(--color-forest),transparent_60%)] p-10 md:p-12 rounded-[2.5rem] text-white shadow-2xl overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-forest/20 to-transparent" />
+                <h3 className="text-2xl font-bold mb-10 relative z-10" style={{ fontFamily: "var(--font-heading)" }}>Impact at a Glance</h3>
+                <div className="grid grid-cols-2 gap-10 relative z-10">
+                  <div>
+                    <p className="text-4xl md:text-5xl font-bold text-neon-accent mb-2" style={{ fontFamily: "var(--font-heading)" }}>70%</p>
+                    <p className="text-white/70 text-base">less emissions from reuse</p>
                   </div>
-                </div>
-                <div className="hidden md:flex justify-end">
-                  <Globe className="h-24 w-24 lg:h-32 lg:w-32 text-white/20" />
+                  <div>
+                    <p className="text-4xl md:text-5xl font-bold text-neon-accent mb-2" style={{ fontFamily: "var(--font-heading)" }}>3x</p>
+                    <p className="text-white/70 text-base">more value retained</p>
+                  </div>
+                  <div>
+                    <p className="text-4xl md:text-5xl font-bold text-neon-accent mb-2" style={{ fontFamily: "var(--font-heading)" }}>90%</p>
+                    <p className="text-white/70 text-base">water saved vs new textiles</p>
+                  </div>
+                  <div>
+                    <p className="text-4xl md:text-5xl font-bold text-neon-accent mb-2" style={{ fontFamily: "var(--font-heading)" }}>∞</p>
+                    <p className="text-white/70 text-base">circular potential</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
+
+      {/* Join Us CTA */}
+      <section className="about-section py-16 md:py-20 lg:py-24 mb-20">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+          <div className="relative bg-[#183D32] bg-[radial-gradient(circle_at_top_right,var(--color-forest),transparent_60%)] rounded-[3rem] p-12 md:p-20 text-center overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,var(--color-forest),transparent_70%)] opacity-50" />
+            <div className="absolute w-[400px] h-[400px] rounded-full blur-[100px] bg-neon-accent/10 bottom-0 right-0" />
+            
+            <div className="relative z-10">
+              <h2 
+                className="text-3xl md:text-5xl lg:text-6xl font-bold mb-8 text-white"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                Join Us
+              </h2>
+              <p className="text-lg md:text-xl lg:text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
+                We are actively seeking partners, collaborators, and investors who share our vision for a circular textile future.
+              </p>
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-6">
+                <a
+                  href="/contact"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-10 py-5 font-heading font-semibold rounded-full bg-neon-accent text-dark-green shadow-[0_4px_20px_rgba(62,229,142,0.3)] hover:bg-white hover:text-dark-green hover:shadow-[0_8px_30px_rgba(62,229,142,0.5)] hover:-translate-y-1 transition-all duration-300"
+                >
+                  Partner With Us
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </a>
+                <a
+                  href="/contact"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-10 py-5 font-heading font-semibold rounded-full bg-transparent text-white border-2 border-white/30 hover:bg-white/10 hover:border-white transition-all duration-300"
+                >
+                  Explore Opportunities
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+        </div>
       </main>
       <Footer />
     </div>
   );
-};
-
-export default About;
+}

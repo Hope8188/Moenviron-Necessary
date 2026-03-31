@@ -80,12 +80,12 @@ export function Footer() {
       "Pioneering the circular economy through sustainable fashion. Ethical UK collection, advanced Kenya processing, and measurable global impact.",
   };
 
-  const navContent = (navCms?.content || {}) as NavContent;
-  const navLinks: NavLink[] = navContent.links || [
-    { href: "/shop", label: "Shop" },
-    { href: "/about", label: "About Us" },
-    { href: "/impact", label: "Our Impact" },
-    { href: "/partners", label: "For Brands" },
+  // Use hardcoded navigation links to match navbar
+  const navLinks: NavLink[] = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+    { href: "/partners", label: "Partnership" },
+    { href: "/investors", label: "Investors" },
     { href: "/contact", label: "Contact" },
   ];
 
