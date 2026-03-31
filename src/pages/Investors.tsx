@@ -119,7 +119,7 @@ export default function Investor() {
               { icon: TrendingUp, title: "Rising Consumption", desc: "Rising consumption is generating unprecedented levels of waste, creating urgency for circular solutions." },
               { icon: Recycle, title: "Underutilized Resources", desc: "The majority of post-consumer textiles are still underutilized, representing massive untapped value." },
               { icon: Building2, title: "Infrastructure Gap", desc: "Recycling infrastructure remains limited and fragmented, creating opportunity for new entrants." },
-              { icon: Globe, title: "Regulatory Pressure", desc: "Regulatory pressure—especially in Europe—is accelerating industry transformation." },
+              { icon: Globe, title: "Regulatory Pressure", desc: "Regulatory pressure especially in Europe, is accelerating industry transformation." },
               { icon: Users, title: "Proven Reuse Markets", desc: "Reuse markets are already established and scalable, providing immediate revenue opportunities." },
               { icon: ArrowRight, title: "Growing Demand", desc: "Demand for circular solutions is growing across industries, driven by ESG requirements." }
             ].map((item, idx) => (
@@ -152,7 +152,7 @@ export default function Investor() {
               {
                 id: 1,
                 title: "Positioned in a Proven Value Chain",
-                content: "Global textile reuse systems already exist and operate at scale—driven by structured sorting, grading, and redistribution. Moenviron is strategically positioning itself within this system while building the next layer: recycling and material recovery."
+                content: "Global textile reuse systems already exist and operate at scale-driven by structured sorting, grading, and redistribution. Moenviron is strategically positioning itself within this system while building the next layer: recycling and material recovery."
               },
               {
                 id: 2,
@@ -172,7 +172,7 @@ export default function Investor() {
               {
                 id: 4,
                 title: "Africa as a Strategic Growth Market",
-                content: "Emerging markets—particularly in Africa—are already key to the global textile value chain:",
+                content: "Emerging markets particularly in Africa are already key to the global textile value chain:",
                 highlights: [
                   "High demand for second-hand clothing",
                   "Established trade systems",
@@ -294,7 +294,7 @@ export default function Investor() {
               
               <div className="mt-16 p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 text-center">
                 <p className="text-2xl font-bold text-neon-accent" style={{ fontFamily: "var(--font-heading)" }}>
-                  The market is moving from linear to circular—and infrastructure is missing.
+                  The market is moving from linear to circular and infrastructure is missing.
                 </p>
               </div>
             </div>

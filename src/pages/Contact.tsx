@@ -161,7 +161,7 @@ export default function Contact() {
                         Let's Build the Future of Circularity Together
                     </p>
                     <p className="text-lg md:text-xl text-text-dark/80 max-w-4xl mx-auto font-medium leading-relaxed">
-                        Whether you are exploring partnership opportunities, investment, or collaboration—we'd love to hear from you.
+                        Whether you are exploring partnership opportunities, investment, or collaboration, we'd love to hear from you.
                     </p>
                 </div>
             </section>
@@ -392,7 +392,7 @@ export default function Contact() {
                         </h2>
                         <div className="w-24 h-2 bg-neon-accent mx-auto rounded-full mb-8 shadow-sm" />
                         <p className="text-xl md:text-2xl text-text-dark font-medium max-w-2xl mx-auto opacity-70">
-                            We aim to respond to all inquiries within 24 - 48 hours. 
+                            We aim to respond to all inquiries within 12 - 24 hours. 
                         </p>
                     </div>
                 </div>

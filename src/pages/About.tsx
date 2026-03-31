@@ -93,7 +93,7 @@ export default function About() {
           <div className="max-w-4xl mx-auto text-center">
             <p className="text-xl md:text-2xl text-text-dark leading-relaxed font-medium">
               Moenviron is a circular economy company focused on transforming textile waste into structured, scalable value. 
-              We operate at the intersection of sustainability, global trade, and material innovation—developing solutions 
+              We operate at the intersection of sustainability, global trade, and material innovation, developing solutions 
               that extend the life of textiles today while building the systems required for full circularity tomorrow.
             </p>
           </div>
@@ -285,7 +285,7 @@ export default function About() {
                 </p>
                 <p className="text-lg text-text-dark leading-relaxed">
                   At the same time, building recycling capacity is essential to address textiles that have reached end-of-life. 
-                  Moenviron's model integrates both—ensuring no value is lost.
+                  Moenviron's model integrates both approaches, ensuring no value is lost.
                 </p>
               </div>
             </div>
