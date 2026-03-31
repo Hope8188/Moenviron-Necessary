@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -407,14 +408,14 @@ export default function Investor() {
               Moenviron offers a unique opportunity to participate in the transformation of one of the world's most resource-intensive industries.
             </p>
             <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
-              <button className="w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 font-heading font-extrabold text-2xl rounded-2xl bg-neon-accent text-dark-green shadow-[0_4px_30px_rgba(62,229,142,0.4)] hover:bg-white hover:text-dark-green hover:shadow-[0_8px_50px_rgba(62,229,142,0.6)] hover:-translate-y-1 transition-all duration-300">
+              <Link to="/contact" className="w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 font-heading font-extrabold text-2xl rounded-2xl bg-neon-accent text-dark-green shadow-[0_4px_30px_rgba(62,229,142,0.4)] hover:bg-white hover:text-dark-green hover:shadow-[0_8px_50px_rgba(62,229,142,0.6)] hover:-translate-y-1 transition-all duration-300">
                 Request Deck
                 <ArrowRight className="w-6 h-6 ml-3" />
-              </button>
-              <button className="w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 font-heading font-extrabold text-2xl rounded-2xl bg-transparent text-white border-2 border-white/30 hover:bg-white/10 hover:border-white transition-all duration-300">
+              </Link>
+              <a href="mailto:investors@moenviron.com" className="w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 font-heading font-extrabold text-2xl rounded-2xl bg-transparent text-white border-2 border-white/30 hover:bg-white/10 hover:border-white transition-all duration-300">
                 Email Us
                 <Mail className="w-6 h-6 ml-3 text-neon-accent" />
-              </button>
+              </a>
             </div>
           </div>
         </div>

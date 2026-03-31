@@ -110,8 +110,8 @@ export default function HowItWorks() {
   }, { scope: ref });
 
   return (
-    <section id="how-it-works" ref={ref} className="py-16 md:py-20 lg:py-24 bg-forest relative">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+    <section id="how-it-works" ref={ref} className="py-16 md:py-20 lg:py-24 bg-forest relative rounded-3xl">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-8 ">
         <div className="how-header text-center">
           <h2
             className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-bold mb-4 tracking-[-0.02em] text-white"
