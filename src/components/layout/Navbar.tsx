@@ -34,7 +34,8 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-secondary/80">
+    <>
+      <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-secondary/80">
       <div className="container flex h-24 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
@@ -175,5 +176,10 @@ export function Navbar() {
         </div>
       )}
     </nav>
+    {/* Development Mode Disclaimer */}
+    <div className="w-full bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground">
+      ⚠️ Development Mode — This page is under development. Some features and buttons may not be fully functional.
+    </div>
+    </>
   );
 }
