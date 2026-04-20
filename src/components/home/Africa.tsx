@@ -67,14 +67,14 @@ export default function Africa() {
   }, { scope: ref });
 
   return (
-    <section id="impact" ref={ref} className="py-16 md:py-20 lg:py-24 bg-sand relative overflow-hidden">
+    <section id="impact" ref={ref} className="py-8 md:py-10 lg:py-12 bg-sand relative overflow-hidden">
       <div
-        className="max-w-[1200px] mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16"
+        className="max-w-[1200px] mx-auto px-3 md:px-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
       >
         {/* Content - Left side */}
         <div className="africa-content flex flex-col justify-center order-2 md:order-1">
           <h2
-            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-bold mb-4 tracking-[-0.02em] text-dark-green"
+            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-bold mb-2 tracking-[-0.02em] text-dark-green"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Why Africa Matters in Circular Textiles
@@ -84,7 +84,7 @@ export default function Africa() {
           </p>
 
           {/* Highlight Box */}
-          <div className="africa-highlight my-6 md:my-8 p-6 md:p-8 text-forest text-[0.9375rem]">
+          <div className="africa-highlight my-4 md:my-6 p-5 md:p-6 text-forest text-[0.9375rem]">
             <h4
               className="font-bold mb-3"
               style={{ fontFamily: "var(--font-heading)" }}
@@ -110,7 +110,7 @@ export default function Africa() {
           </div>
 
           
-          <p className="text-slate-700 md:text-lg text-text-muted mt-4">
+          <p className="text-slate-700 md:text-lg text-text-muted mt-3">
             Moenviron is positioning itself within this ecosystem to build more
             structured, transparent, and scalable circular solutions.
           </p>
@@ -118,7 +118,7 @@ export default function Africa() {
 
         {/* Image - Right side */}
         <div className="africa-image order-1 md:order-2">
-          <div className="relative rounded-3xl p-3 md:p-4 futuristic-border mt-8 md:mt-0">
+          <div className="relative rounded-3xl p-2 md:p-3 futuristic-border mt-6 md:mt-0">
             <div
               className="w-full h-[300px] md:h-[400px] lg:h-[500px] bg-mint bg-cover bg-center rounded-2xl md:rounded-3xl relative overflow-hidden"
               style={{

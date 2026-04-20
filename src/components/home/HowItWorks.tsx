@@ -110,18 +110,18 @@ export default function HowItWorks() {
   }, { scope: ref });
 
   return (
-    <section id="how-it-works" ref={ref} className="py-16 md:py-20 lg:py-24 bg-forest relative rounded-3xl">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 ">
+    <section id="how-it-works" ref={ref} className="py-8 md:py-10 lg:py-12 bg-forest relative rounded-3xl">
+      <div className="max-w-[1200px] mx-auto px-3 md:px-4 ">
         <div className="how-header text-center">
           <h2
-            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-bold mb-4 tracking-[-0.02em] text-white"
+            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-bold mb-2 tracking-[-0.02em] text-white"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             How the System Works
           </h2>
         </div>
 
-        <div className="how-steps-container flex flex-col md:flex-row items-center md:items-start md:justify-between gap-10 md:gap-0 mt-12 relative">
+        <div className="how-steps-container flex flex-col md:flex-row items-center md:items-start md:justify-between gap-6 md:gap-0 mt-8 relative">
           {/* Connecting Line (desktop) */}
           <div className="hidden md:block how-line absolute top-[40px] left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-white/10 via-neon-accent to-white/10 z-[1] origin-left" />
 
@@ -131,7 +131,7 @@ export default function HowItWorks() {
               className="how-step flex-1 text-center relative z-[2] px-0 md:px-4 max-w-[300px] md:max-w-none"
             >
               {/* Icon Wrapper */}
-              <div className="how-icon-wrapper w-16 h-16 lg:w-20 lg:h-20 mx-auto mb-5 bg-darker-green border-2 border-mint rounded-full flex items-center justify-center relative shadow-[0_0_20px_rgba(0,0,0,0.2)] hover:border-neon-accent hover:shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:scale-105 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]">
+              <div className="how-icon-wrapper w-16 h-16 lg:w-20 lg:h-20 mx-auto mb-3 bg-darker-green border-2 border-mint rounded-full flex items-center justify-center relative shadow-[0_0_20px_rgba(0,0,0,0.2)] hover:border-neon-accent hover:shadow-[0_0_20px_rgba(62,229,142,0.3)] hover:scale-105 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]">
                 <div className="absolute -top-2 -right-2 w-6 h-6 lg:w-7 lg:h-7 bg-neon-accent text-dark-green rounded-full flex items-center justify-center font-bold text-xs lg:text-sm">
                   {step.num}
                 </div>

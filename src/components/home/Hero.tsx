@@ -143,7 +143,7 @@ export default function Hero() {
   ];
 
   return (
-    <section ref={containerRef} className="relative pt-8 pb-12 md:pt-12 md:pb-16 lg:pt-12 lg:pb-24 flex flex-col min-h-screen overflow-hidden bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)]">
+    <section ref={containerRef} className="relative pt-4 pb-6 md:pt-6 md:pb-8 lg:pt-6 lg:pb-10 flex flex-col min-h-screen overflow-hidden bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)]">
       {/* Background Shapes */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="bg-shape-1 absolute w-[200px] h-[200px] md:w-[350px] md:h-[350px] lg:w-[500px] lg:h-[500px] bg-[rgba(196,223,200,0.4)] rounded-full blur-[80px] -top-[30px] -right-[30px] lg:-top-[80px] lg:-right-[80px]" />
@@ -151,21 +151,21 @@ export default function Hero() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-[1200px] mx-auto px-2 md:px-4 w-full flex-1 flex flex-col md:flex-row items-center md:items-center gap-8 md:gap-10 lg:gap-16">
+      <div className="relative z-10 max-w-[1200px] mx-auto px-2 md:px-3 w-full flex-1 flex flex-col md:flex-row items-center md:items-center gap-4 md:gap-6 lg:gap-8">
         {/* Text */}
         <div
           ref={textRef}
           className="order-1 flex-1"
         >
           <h1
-            className="text-3xl md:text-5xl lg:text-7xl leading-tight md:leading-[1.05] mb-6 tracking-tight text-center md:text-left"
+            className="text-3xl md:text-5xl lg:text-7xl leading-tight md:leading-[1.05] mb-3 tracking-tight text-center md:text-left"
             style={{ fontFamily: "var(--font-heading)", fontWeight: 800, color: "#183D32" }}
           >
             <span className="block whitespace-nowrap">Redefining</span>
             <span className="block whitespace-nowrap">Textile Waste</span>
             <span className="block whitespace-nowrap">into Circular Value</span>
           </h1>
-          <p className="text-sm md:text-[0.9375rem] lg:text-lg text-[#1a1a1a] mb-6 leading-relaxed font-medium text-center md:text-left max-w-lg">
+          <p className="text-sm md:text-[0.9375rem] lg:text-lg text-[#1a1a1a] mb-3 leading-relaxed font-medium text-center md:text-left max-w-lg">
             Moenviron builds scalable solutions to transform post-consumer
             textiles into reusable, recyclable, and traceable resources bridging
             global supply chains and Africa&#39;s growing circular economy.
@@ -287,7 +287,7 @@ export default function Hero() {
       </div>
 
       {/* Bottom Section - maintain the loop */}
-      <div className="relative z-10 w-full px-5 sm:px-6 lg:px-8 mt-8 md:mt-12">
+      <div className="relative z-10 w-full px-5 sm:px-6 lg:px-8 mt-4 md:mt-6">
         <div className="max-w-4xl mx-auto text-center">
         
           <p className="text-xs md:text-[0.8125rem] lg:text-base text-[#183D32] font-medium max-w-3xl mx-auto">

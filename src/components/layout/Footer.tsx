@@ -96,7 +96,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-secondary">
-      <div className="container py-12 md:py-16">
+      <div className="container py-8 md:py-10">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-4">
@@ -238,7 +238,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 md:flex-row">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} {siteSettings.siteName}. All rights reserved.
           </p>

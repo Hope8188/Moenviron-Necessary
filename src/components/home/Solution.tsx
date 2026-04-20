@@ -97,14 +97,14 @@ export default function Solution() {
   }, { scope: ref });
 
   return (
-    <section id="solution" ref={ref} className="py-16 md:py-20 lg:py-24 bg-white relative">
+    <section id="solution" ref={ref} className="py-8 md:py-10 lg:py-12 bg-white relative">
       {/* Glow BG */}
       <div className="solution-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen md:w-[80vw] h-[60vh] md:h-[80vh] bg-[radial-gradient(circle,rgba(62,229,142,0.15)_0%,transparent_70%)] z-0 pointer-events-none" />
 
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10">
+      <div className="max-w-[1200px] mx-auto px-3 md:px-4 relative z-10">
         <div className="solution-header text-center">
           <h2
-            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-4 tracking-[-0.02em]"
+            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-2 tracking-[-0.02em]"
             style={{ fontFamily: "var(--font-heading)", color: "#183D32" }}
           >
             A Smarter Circular Textile System
@@ -116,11 +116,11 @@ export default function Solution() {
           </p>
         </div>
 
-        <div className="solution-cards grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+        <div className="solution-cards grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
           {pillars.map((pillar, i) => (
             <div
               key={pillar.num}
-              className="solution-card bg-sand rounded-3xl p-8 md:p-12 relative overflow-hidden border-transparent hover:scale-[1.02] hover:border-mint hover:bg-white hover:shadow-[0_4px_20px_rgba(30,58,47,0.08)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group cursor-pointer"
+              className="solution-card bg-sand rounded-3xl p-5 md:p-6 relative overflow-hidden border-transparent hover:scale-[1.02] hover:border-mint hover:bg-white hover:shadow-[0_4px_20px_rgba(30,58,47,0.08)] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group cursor-pointer"
               onClick={() => setSelectedPillar(i)}
             >
               <div
@@ -130,7 +130,7 @@ export default function Solution() {
                 {pillar.num}
               </div>
               <h3
-                className="text-xl md:text-2xl font-bold mb-3 relative z-[2]"
+                className="text-xl md:text-2xl font-bold mb-2 relative z-[2]"
                 style={{ fontFamily: "var(--font-heading)", color: "#183D32" }}
               >
                 {pillar.title}

@@ -103,8 +103,8 @@ export default function Alignment() {
   }, { scope: ref });
 
   return (
-    <section id="alignment" ref={ref} className="py-16 md:py-20 lg:py-24 bg-white text-center">
-      <div className="max-w-[56rem] mx-auto px-4 md:px-8">
+    <section id="alignment" ref={ref} className="py-8 md:py-10 lg:py-12 bg-white text-center">
+      <div className="max-w-[56rem] mx-auto px-3 md:px-4">
         <div className="align-header">
           {/* Badge */}
           <div className="align-badge w-16 h-16 md:w-20 md:h-20 bg-light-green text-forest rounded-full flex items-center justify-center mx-auto mb-8 cursor-default">
@@ -112,7 +112,7 @@ export default function Alignment() {
           </div>
 
           <h2
-            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-bold mb-4 tracking-[-0.02em] text-dark-green"
+            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-bold mb-2 tracking-[-0.02em] text-dark-green"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Aligned With Global Circular Economy Systems
@@ -123,7 +123,7 @@ export default function Alignment() {
         </div>
 
         {/* Marquee Tags */}
-        <div className="align-marquee marquee-container relative my-6 md:my-8 overflow-hidden">
+        <div className="align-marquee marquee-container relative my-4 md:my-6 overflow-hidden">
           {/* Left blur gradient overlay */}
           <div className="absolute left-0 top-0 bottom-0 w-14 md:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
 
@@ -157,17 +157,17 @@ export default function Alignment() {
         {/* Benefits */}
         <div>
           <h3
-            className="align-subheader text-lg md:text-xl lg:text-[clamp(1.25rem,2vw,1.5rem)] font-medium mt-16 mb-8"
+            className="align-subheader text-lg md:text-xl lg:text-[clamp(1.25rem,2vw,1.5rem)] font-medium mt-8 mb-4"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             We are building a model that supports:
           </h3>
 
-          <div className="align-benefits-container grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="align-benefits-container grid grid-cols-2 md:grid-cols-4 gap-4">
             {benefits.map((b, i) => (
               <div
                 key={b.text}
-                className="align-benefit flex flex-col items-center gap-3 p-6 md:p-8 bg-sand rounded-2xl hover:bg-white hover:shadow-[0_4px_20px_rgba(30,58,47,0.08)] hover:-translate-y-[3px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                className="align-benefit flex flex-col items-center gap-2 p-4 md:p-5 bg-sand rounded-2xl hover:bg-white hover:shadow-[0_4px_20px_rgba(30,58,47,0.08)] hover:-translate-y-[3px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
               >
                 <span className="text-[2rem] md:text-[2.5rem]">{b.icon}</span>
                 <span className="font-semibold text-dark-green text-[0.8125rem] md:text-base">

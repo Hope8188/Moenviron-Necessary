@@ -116,11 +116,11 @@ export default function Problem() {
   }, { scope: ref });
 
   return (
-    <section id="problem" ref={ref} className="py-16 md:py-20 lg:py-24 bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)]">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+    <section id="problem" ref={ref} className="py-2 md:py-1 lg:py-1 bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)]">
+      <div className="max-w-[1200px] mx-auto px-3 md:px-4">
         <div className="problem-header text-center">
           <h2
-            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-4 tracking-[-0.02em]"
+            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-2 tracking-[-0.02em]"
             style={{ fontFamily: "var(--font-heading)", color: "#183D32" }}
           >
             The Textile Waste System Is Broken
@@ -134,17 +134,17 @@ export default function Problem() {
         </div>
 
         <h3
-          className="problem-subheader text-lg md:text-xl lg:text-[clamp(1.25rem,2vw,1.5rem)] font-bold text-center mt-16"
+          className="problem-subheader text-lg md:text-xl lg:text-[clamp(1.25rem,2vw,1.5rem)] font-bold text-center mt-8"
           style={{ fontFamily: "var(--font-heading)", color: "hsl(var(--forest))" }}
         >
           At the same time:
         </h3>
 
-        <div className="problem-cards-container grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="problem-cards-container grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className="problem-card group relative bg-white border border-light-green rounded-3xl p-8 md:p-10 text-center shadow-[0_4px_20px_rgba(30,58,47,0.08)] hover:-translate-y-[5px] hover:shadow-[0_15px_30px_rgba(30,58,47,0.1)] hover:border-mint transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden cursor-pointer"
+              className="problem-card group relative bg-white border border-light-green rounded-3xl p-5 md:p-6 text-center shadow-[0_4px_20px_rgba(30,58,47,0.08)] hover:-translate-y-[5px] hover:shadow-[0_15px_30px_rgba(30,58,47,0.1)] hover:border-mint transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden cursor-pointer"
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
               onClick={() => setSelectedCard(index)}
@@ -176,7 +176,7 @@ export default function Problem() {
                   <card.icon className="w-7 h-7 md:w-8 md:h-8" strokeWidth={1.5} />
                 </div>
                 <h4
-                  className="text-lg md:text-xl font-bold mb-3"
+                  className="text-lg md:text-xl font-bold mb-2"
                   style={{ fontFamily: "var(--font-heading)", color: "#183D32" }}
                 >
                   {card.title}
@@ -187,7 +187,7 @@ export default function Problem() {
           ))}
         </div>
 
-        <div className="problem-footer mt-16 p-6 md:p-8 max-w-full md:max-w-[800px] mx-auto text-forest text-[0.9375rem]">
+        <div className="problem-footer mt-8 p-5 md:p-6 max-w-full md:max-w-[800px] mx-auto text-forest text-[0.9375rem]">
           <p className="text-center font-bold">
             The result is a system that wastes resources, increases emissions,
             and misses economic opportunities.
