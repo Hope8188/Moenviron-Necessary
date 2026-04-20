@@ -121,10 +121,10 @@ export default function Problem() {
         <div className="problem-header text-center">
           <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-mint/30 max-w-4xl mx-auto">
             <h2
-              className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-2 tracking-[-0.02em]"
+              className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-6 tracking-[-0.02em] leading-[1.0]"
               style={{ fontFamily: "var(--font-heading)", color: "#183D32" }}
             >
-              The Textile Waste System Is Broken
+              The Textile Waste System Is<br /> Broken
             </h2>
             <p className="text-base md:text-lg text-text-muted max-w-3xl mx-auto">
               Every year, millions of tonnes of textiles are discarded
