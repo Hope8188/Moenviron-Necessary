@@ -119,18 +119,20 @@ export default function Problem() {
     <section id="problem" ref={ref} className="py-2 md:py-1 lg:py-1 bg-sand bg-[radial-gradient(circle_at_15%_50%,rgba(226,239,231,1),transparent_50%),radial-gradient(circle_at_85%_30%,rgba(196,223,200,0.5),transparent_50%)]">
       <div className="max-w-[1200px] mx-auto px-3 md:px-4">
         <div className="problem-header text-center">
-          <h2
-            className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-2 tracking-[-0.02em]"
-            style={{ fontFamily: "var(--font-heading)", color: "#183D32" }}
-          >
-            The Textile Waste System Is Broken
-          </h2>
-          <p className="text-base md:text-lg text-text-muted max-w-3xl mx-auto">
-            Every year, millions of tonnes of textiles are discarded
-            globally, yet most are still wearable or recyclable. In Europe alone,
-            the majority of post-consumer textiles are either incinerated or
-            landfilled, despite clear opportunities for reuse and recycling.
-          </p>
+          <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-mint/30 max-w-4xl mx-auto">
+            <h2
+              className="text-[1.75rem] md:text-[2rem] lg:text-[clamp(2rem,4vw,3rem)] font-extrabold mb-2 tracking-[-0.02em]"
+              style={{ fontFamily: "var(--font-heading)", color: "#183D32" }}
+            >
+              The Textile Waste System Is Broken
+            </h2>
+            <p className="text-base md:text-lg text-text-muted max-w-3xl mx-auto">
+              Every year, millions of tonnes of textiles are discarded
+              globally, yet most are still wearable or recyclable. In Europe alone,
+              the majority of post-consumer textiles are either incinerated or
+              landfilled, despite clear opportunities for reuse and recycling.
+            </p>
+          </div>
         </div>
 
         <h3
