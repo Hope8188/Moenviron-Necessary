@@ -176,10 +176,7 @@ export function Navbar() {
         </div>
       )}
     </nav>
-    {/* Development Mode Disclaimer */}
-    <div className="w-full bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground">
-      ⚠️ Development Mode — This page is under development. Some features and buttons may not be fully functional.
-    </div>
+
     </>
   );
 }
