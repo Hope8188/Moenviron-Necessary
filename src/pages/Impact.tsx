@@ -28,15 +28,19 @@ function ImpactHero() {
       </div>
       <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8 text-center" ref={textRef}>
         <h1 
-          className="text-4xl md:text-6xl lg:text-8xl font-extrabold mb-6 tracking-tight text-dark-green leading-[1.05]"
+          className="text-3xl md:text-5xl lg:text-7xl font-extrabold mb-4 tracking-tight text-dark-green leading-[1.05]"
           style={{ fontFamily: "var(--font-heading)" }}
         >
           Our <span className="text-forest">Impact</span>
         </h1>
         <p 
-          className="text-xl md:text-2xl lg:text-3xl text-dark-green/80 leading-relaxed max-w-3xl mx-auto font-medium"
+          className="text-base md:text-lg lg:text-xl text-dark-green/80 leading-relaxed max-w-3xl mx-auto font-medium mb-4"
         >
-          Driving circular innovation through action, education, and community engagement.
+          Driving Circular Innovation
+        </p>
+        <p className="text-lg md:text-xl text-text-dark/80 max-w-4xl mx-auto font-medium leading-relaxed">
+          Through action, education, and community engagement, Moenviron is building the infrastructure 
+          required for a truly circular textile economy, creating value from waste and empowering local communities.
         </p>
       </div>
     </section>
@@ -79,9 +83,9 @@ function ImpactInitiatives() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4">
           {initiatives.map((item, i) => (
-            <div key={i} className="group relative bg-sand border border-light-green rounded-[1.5rem] p-6 hover:border-mint transition-all duration-500 hover:-translate-y-1">
+            <div key={i} className="group relative bg-sand border border-light-green rounded-2xl p-5 hover:border-mint transition-all duration-500 hover:-translate-y-1">
               <div className="w-12 h-12 rounded-xl bg-white text-forest flex items-center justify-center mb-4 shadow-sm group-hover:bg-neon-accent/20 transition-all duration-300">
                 <item.icon className="w-6 h-6" strokeWidth={1.5} />
               </div>
@@ -104,9 +108,9 @@ function ImpactInitiatives() {
 
 function CommunitySection() {
   return (
-    <section className="py-8 md:py-12 bg-dark-green/5">
+    <section className="py-8 md:py-10 bg-dark-green/5">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-4 items-center">
           <div className="space-y-6">
             <h2 className="text-2xl md:text-4xl font-bold text-dark-green" style={{ fontFamily: "var(--font-heading)" }}>
               Community & Education
@@ -153,7 +157,7 @@ function CommunitySection() {
               </div>
             </div>
             {/* Floating stats card */}
-            <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 bg-white p-4 md:p-6 rounded-2xl shadow-lg border border-light-green max-w-[200px]">
+            <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 bg-white p-4 rounded-2xl shadow-lg border border-light-green max-w-[200px]">
               <p className="text-3xl font-bold text-forest mb-1" style={{ fontFamily: "var(--font-heading)" }}>500+</p>
               <p className="text-text-dark text-sm font-medium leading-tight">Community members engaged this year</p>
             </div>
@@ -166,9 +170,9 @@ function CommunitySection() {
 
 function ImpactCTA() {
   return (
-    <section className="py-8 md:py-12 bg-[#183D32]">
+    <section className="py-8 md:py-10 bg-[#183D32]">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
-        <div className="relative rounded-[2rem] bg-gradient-to-r from-forest/20 to-transparent p-6 md:p-12 border border-white/10 overflow-hidden text-center">
+        <div className="relative rounded-[2rem] bg-gradient-to-r from-forest/20 to-transparent p-6 md:p-10 border border-white/10 overflow-hidden text-center">
           <div className="relative z-10">
             <h2 className="text-2xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-heading)" }}>
               Support Our Impact
