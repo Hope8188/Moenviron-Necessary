@@ -28,6 +28,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
+    { href: "/impact", label: "Impact" },
     { href: "/partners", label: "Partnership" },
     { href: "/investors", label: "Investors" },
     { href: "/contact", label: "Contact" },
