@@ -1,12 +1,24 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, Activity, Calendar, Users, Rocket, Recycle, Globe, Lightbulb } from "lucide-react";
+import { ArrowRight, Activity, Calendar, Users, Rocket, Recycle, Globe, Lightbulb, X, MapPin } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+
+import img1 from "@/assets/images/DSC_4278.jpg";
+import img2 from "@/assets/images/DSC_4280.jpg";
+import img3 from "@/assets/images/DSC_4282.jpg";
+import img4 from "@/assets/images/DSC_4283.jpg";
+import img5 from "@/assets/images/DSC_4292.jpg";
+import img6 from "@/assets/images/DSC_4294.jpg";
+import img7 from "@/assets/images/DSC_4299.jpg";
+import img8 from "@/assets/images/DSC_4308.jpg";
+import img9 from "@/assets/images/DSC_4313.jpg";
+import img10 from "@/assets/images/DSC_4315.jpg";
+import img11 from "@/assets/images/DSC_4324.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -147,7 +159,10 @@ function CommunitySection() {
           </div>
           <div className="relative">
             <div className="aspect-[16/9] lg:aspect-square rounded-[2rem] bg-gradient-to-br from-forest to-dark-green overflow-hidden shadow-xl relative group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&q=80')] bg-cover bg-center mix-blend-overlay opacity-40 group-hover:scale-110 transition-transform duration-700" />
+              <div 
+                className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-40 group-hover:scale-110 transition-transform duration-700" 
+                style={{ backgroundImage: `url(${img10})` }}
+              />
               <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
                 <div className="space-y-3">
                   <Activity className="w-12 h-12 text-neon-accent mx-auto animate-pulse" />
@@ -164,6 +179,67 @@ function CommunitySection() {
           </div>
         </div>
       </div>
+    </section>
+  );
+}
+
+function ImpactGallery() {
+  const [selectedImg, setSelectedImg] = useState<string | null>(null);
+  const images = [img1, img2, img3, img4, img5, img6, img7, img8, img9, img11];
+  
+  return (
+    <section className="py-8 md:py-12 bg-white">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        <h2 className="text-2xl md:text-4xl font-bold text-dark-green mb-8 text-center" style={{ fontFamily: "var(--font-heading)" }}>
+          Our Impact in Action
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {images.map((img, index) => (
+            <div 
+              key={index} 
+              className="aspect-square rounded-2xl overflow-hidden group shadow-sm border border-light-green/20 hover:border-mint transition-all duration-300 cursor-pointer relative"
+              onClick={() => setSelectedImg(img)}
+            >
+              <img 
+                src={img} 
+                alt={`Impact ${index + 1}`} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+              />
+              <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <p className="text-white text-xs font-medium flex items-center gap-1.5 leading-tight">
+                  <MapPin className="w-3 h-3 flex-shrink-0" /> Ayego Uriri sub-County, Migori
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {selectedImg && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setSelectedImg(null)}
+        >
+          <button 
+            className="absolute top-4 right-4 md:top-8 md:right-8 p-2 text-white/70 hover:text-white transition-colors bg-black/20 rounded-full hover:bg-black/40 z-10"
+            onClick={() => setSelectedImg(null)}
+          >
+            <X className="w-8 h-8" />
+          </button>
+          <div className="relative flex flex-col items-center max-w-full max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={selectedImg} 
+              alt="Impact Fullscreen" 
+              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+            />
+            <div className="absolute bottom-4 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-neon-accent" />
+              <span className="text-white text-sm font-medium">Ayego Uriri sub-County, Migori</span>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -210,6 +286,7 @@ export default function Impact() {
         <ImpactHero />
         <ImpactInitiatives />
         <CommunitySection />
+        <ImpactGallery />
         <ImpactCTA />
       </main>
       <Footer />

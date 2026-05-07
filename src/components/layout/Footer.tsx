@@ -84,6 +84,7 @@ export function Footer() {
   const navLinks: NavLink[] = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
+    { href: "/impact", label: "Impact" },
     { href: "/partners", label: "Partnership" },
     { href: "/investors", label: "Investors" },
     { href: "/contact", label: "Contact" },
